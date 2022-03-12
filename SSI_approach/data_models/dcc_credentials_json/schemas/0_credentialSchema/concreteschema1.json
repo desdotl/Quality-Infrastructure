@@ -9,8 +9,8 @@
       "type": "array",
       "uniqueItems": true,
       "items": [
-        {"$ref": "https://www.w3.org/2018/credentials/v1"},
-        {"$ref": "https://qualityinfrastructure.com/schemas/credential/v1"}
+        "https://www.w3.org/2018/credentials/v1",
+        "https://raw.githubusercontent.com/desdotl/Quality-Infrastructure/master/SSI_approach/data_models/dcc_credentials_json/schemas/context/DCCcontext.json"
       ],
       "additionalItems": {
         "type": "string",
