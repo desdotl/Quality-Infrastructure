@@ -1,6 +1,5 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/0_credentialSchema/schema.json",
   "title": "Verifiable Credential DCC",
   "description": "Schema on DCC Verifiable Credential",
   "type": "object",
@@ -8,12 +7,15 @@
     "@context": {
       "description": "Defines semantic context of the Verifiable Credential",
       "type": "array",
-      "minItems":2,
-      "default":["https://www.w3.org/2018/credentials/v1","https://qualityinfrastructure.com/schemas/credential/v1"],
-      "items": {
+      "uniqueItems": true,
+      "items": [
+        {"type":"string","const":"https://www.w3.org/2018/credentials/v1"},
+        {"type":"string","const":"https://raw.githubusercontent.com/desdotl/Quality-Infrastructure/master/SSI_approach/data_models/dcc_credentials_json/schemas/context/DCCcontext.json"}
+      ],
+      "additionalItems": {
         "type": "string",
-        "format": "uri"
-      }
+         "format": "uri"
+        }
     },
     "id": {
       "description": "Defines unique identifier of the Verifiable Credential",
@@ -57,16 +59,7 @@
       "default":"2025-01-01T01:01:01Z"
     },
     "credentialSubject": {
-      "oneOf": [
-        {"$ref":"../1_SimpleVerifiableCredentialSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"../2_VerifiableAccreditationSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"../3_LaboratoryVerifiableAccreditationSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"../4_VerifiableDCCSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"../4_VerifiableDCCSchema/schema_full.json#/definitions/credentialSubject"},
-        {"$ref":"../5_VerifiableIDSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"../6_VerifiableDeviceIdSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"../7_VerifiableDelegationSchema/schema.json#/definitions/credentialSubject"}
-      ]
+     "type":"object"
     },  
     "credentialSchema": {
       "description": "Contains information about the credential schema (template) on which the Verifiable Credential is based",
