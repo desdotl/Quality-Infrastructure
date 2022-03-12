@@ -1,0 +1,57 @@
+{
+    "@context": ["http://example.com/resource?foo=bar#fragment"],
+    "id": "http://example.com/resource?foo=bar#fragment",
+    "type": ["type0"],
+    "issuer": "http://example.com/resource?foo=bar#fragment",
+    "validFrom": "2000-01-01T01:01:01Z",
+    "validTo": "2000-01-01T01:01:01Z",
+    "credentialSubject": {
+        "id": "http://example.com/resource?foo=bar#fragment",
+        "certificationClaims": {
+            "refDCC": "http://example.com/resource?foo=bar#fragment",
+            "standard": ["http://example.com/resource?foo=bar#fragment"],
+            "equipments": [
+                {
+                    "id": "http://example.com/resource?foo=bar#fragment",
+                    "refDCC": "http://example.com/resource?foo=bar#fragment"
+                }
+            ],
+            "outputUncertainties": [
+                {
+                    "instrmentOrProperty": "instrmentOrProperty",
+                    "si-unit": "si-unit",
+                    "interval": {
+                        "min": "min",
+                        "max": "max"
+                    },
+                    "uncertainity": {
+                        "latex": "latex",
+                        "mathml": {
+                            "Any": {},
+                            "id": "id",
+                            "refId": ["refId0"],
+                            "refType": ["refType0"]
+                        },
+                        "id": "id",
+                        "refId": ["refId0"],
+                        "refType": ["refType0"]
+                    }
+                }
+            ]
+        },
+        "limitJurisdiction": ["http://example.com/resource?foo=bar#fragment"],
+        "domain": "http://example.com/resource?foo=bar#fragment",
+        "domainName": "domainName"
+    },
+    "credentialSchema": {
+        "id": "http://example.com/resource?foo=bar#fragment",
+        "type": "FullJsonSchemaValidator2021"
+    },
+    "proof": {
+        "type": "type",
+        "proofPurpose": "proofPurpose",
+        "created": "2000-01-01T01:01:01Z",
+        "verificationMethod": "verificationMethod",
+        "jws": "jws"
+    }
+}

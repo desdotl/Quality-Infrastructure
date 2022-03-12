@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/6_VerifiableDeviceIdSchema/schema.json",
+  "title": "DCC device Verifiable ID",
+  "description": "Schema of a DCC Verifiable dev-ID",
+  "definitions": {
+    "credentialSubject": {
+            "description": "Defines additional properties on credentialSubject to describe ID",
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "Defines a unique identifier of the credential subject",
+                "type": "string",
+                "format": "uri",
+                "default": "did:dcc:0xe88357BF682d965a38CE41d00085C05412d25936",
+                "pattern": "^(did:dcc:0x)([a-zA-Z0-9]{40})$"
+              },
+              "manufatureProducerName": {
+                "description": "Defines the name of the Manufacturer of the credential subject",
+                "type": "string"
+              },
+              "deviceModel": {
+                "description": "Defines the device model of the credential subject",
+                "type": "string"
+              },
+              "deviceVersion": {
+                "description": "Defines the device version of the credential subject",
+                "type": "string",
+                "format": "date"
+              },
+              "catalogNumber": {
+                "description": "Defines the catalog Number from the manufacturer ",
+                "type": "string"
+              },
+              "lotNumber": {
+                "description": "Defines the lot in wich the device has been produced",
+                "type": "string"
+              },
+              "serialNumber": {
+                "description": "Defines the device serial number",
+                "type": "string"
+              },
+              "refManual": {
+                "description": "Defines the link to the instrument",
+                "type": "string"
+              }
+            },
+            "required": ["id","manufatureProducerName","deviceModel","deviceVersion","serialNumber","lotNumber"]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "credentialSubject":{"$ref": "#/definitions/credentialSubject"}
+  }
+  }

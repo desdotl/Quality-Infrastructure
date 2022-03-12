@@ -1,0 +1,79 @@
+{
+  "type": "https://w3c-ccg.github.io/vc-json-schemas/schema/1.0/schema.json",
+  "modelVersion": "1.0",
+  "id": "did:work:MDP8AsFhHzhwUvGNuYkX7T;id=06e126d1-fa44-4882-a243-1e326fbe21db;version=1.0",
+  "name": "EmailCredentialSchema",
+  "author": "did:work:MDP8AsFhHzhwUvGNuYkX7T",
+  "authored": "2018-01-01T00:00:00+00:00",
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Email",
+    "type": "object",
+    "properties": {
+      "emailAddress": {
+        "type": "string",
+        "format": "email"
+      }
+    },
+    "required": ["emailAddress"],
+    "additionalProperties": false
+  },
+  "proof": {
+      "created": "2019-09-27T06:26:11Z",
+      "creator": "did:work:MDP8AsFhHzhwUvGNuYkX7T#key-1",
+      "nonce": "0efba23d-2987-4441-998e-23a9d9af79f0",
+      "signatureValue": "2A7ZF9f9TWMdtgn57Y6dP6RQGs52xg2QdjUESZUuf4J9BUnwwWFNL8vFshQAEQF6ZFBXjYLYNU4hzXNKc3R6y6re",
+      "type": "Ed25519VerificationKey2018"
+  }
+}
+{
+"evidence": {
+    "description": "Contains information about the process which resulted in the issuance of the Verifiable Credential",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "If present, it MUST contain a URL that points to where more information about this instance of evidence can be found.",
+          "type": "string"
+        },
+        "type": {
+          "description": "Defines the evidence type",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "verifier": {
+          "description": "Defines entity which has verified documents before Verifiable Credential issuance",
+          "type": "string"
+        },
+        "evidenceDocument": {
+          "description": "Defines document(s) which have been verified before Verifiable Credential issuance",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subjectPresence": {
+          "description": "Defines if the Verifiable Credential subject was physically present in the course of the verification",
+          "type": "string"
+        },
+        "documentPresence": {
+          "description": "Defines how the document(s) which have been verified before Verifiable Credential issuance have been provided (e.g. physically, digitally)",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "verifier",
+        "evidenceDocument",
+        "subjectPresence",
+        "documentPresence"
+      ]
+    }
+  }
+}

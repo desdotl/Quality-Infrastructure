@@ -1,0 +1,49 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1"
+  ],
+  "id": "d7d55c5c646e73ea8e0e50a2c3b9a12dbe3a659eb8da68c5df1b8eab40d00eec",
+  "type": [
+    "VerifiableCredential",
+    "VerifiableDCC"
+  ],
+  "issuer": "did:dcc:00001234",
+  "issuanceDate": "2020-06-22T14:11:44Z",
+  "credentialSubject": {
+    "id": "did:dcc:00001235",
+    "CertificationClaims": {
+
+      "refDCC": "https://dcc.com/IPFS/eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il",
+     
+          "title": "Gas flow meter calibration",
+          "Class":"Working Standard",
+          "standard":["https://doi.org/10.6028/NIST.SP.250-63"],
+          "equipments": [
+            { "id":"did:dcc:00008679",
+              "refDCC": "https://dcc.com/IPFS/IsImI2NCIiOiJSUzeyJhbGciI1N6ZmFsc2UsImNyaXQiOlsiYjY0Il"
+            },
+            { "id":"did:dcc:00008679",
+              "refDCC": "https://dcc.com/IPFS/ciI1N6ZmFsc2UsImIsImI2NCIiOiJSUzeyJhbGNyaXQiOlsiYjY0Il"
+            }
+      ],
+      "limitJurisdiction": [
+        "http://publications.europa.eu/resource/authority/atu/ITA"
+      ],
+      "reviewDate": "2026-02-23T14:11:44Z"
+    }
+  },
+  "expirationDate": "2026-04-23T14:11:44Z",
+  "validFrom": "2022-02-23T00:00:00Z",
+  "credentialSchema": {
+    "id":" https://dcc.com/sr/9cc5de638483b601074d591b2762e21635a03dd17375760f1aff7229391d8efe",
+    "type": "FullJsonSchemaValidator2021"
+  },
+  "proof": {
+    "type": "JWT#ES256K",
+    "created": "2019-06-22T14:11:44Z",
+    "proofPurpose": "assertionMethod",
+    "verificationMethod": "did:dcc:00001234#key",
+    "jws": "eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TCYt5X"
+   
+  }
+}

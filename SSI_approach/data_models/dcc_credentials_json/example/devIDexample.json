@@ -1,0 +1,42 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1"
+  ],
+  "id": "1dee355d-0432-4910-ac9c-70d89e8d674e",
+  "type": ["VerifiableCredential", "VerifiableAttestation"],
+  "issuer": "did:dcc:2757945549477fc571663bee12042873fe555b674bd294a3",
+  "issuanceDate": "2019-06-22T14:11:44Z",
+  "validFrom": "2019-06-22T14:11:44Z",
+  "issued": "2019-06-22T14:11:44Z",
+  "credentialSubject": {
+    "id": "did:dcc:2659b154a445434a39d91149ead3bd993cb99fd5e78281b7",
+    "manufatureProducerName": "STMicroElectronics",
+    "deviceModel": "STM32L476",
+    "deviceVersion": "AY",
+    "catalogNumber":"1FFF7A10",
+    "lotNumber": "12345678",
+    "serialNumber": "000101234567120/100/110",
+    "refManual": "https:https:/dcc.example.com/IPFS/659b154a445434a39d91149ead3bd993cb99fd5e78281b7"
+  },
+  "credentialSchema": {
+    "id": "https://dcc.com/tsr/9cc5de638483b601074d591b2762e21635a03dd17375760f1aff7229391d8efe",
+    "type": "FullJsonSchemaValidator2021"
+  },
+  "evidence": [
+    {
+      "id": "f2aeec97-fc0d-42bf-8ca7-0548192d4231",
+      "type": ["deviceVerification"],
+      "verifier": "did:dcc:2e81454f76775c687694ee6772a17796436768a30e289555",
+      "evidenceDocument": ["Production Document"],
+      "subjectPresence": "Physical",
+      "documentPresence": ["Physical"]
+    }
+  ],
+  "proof": {
+    "type": "JWT#ES256K",
+    "created": "2019-06-22T14:11:44Z",
+    "proofPurpose": "assertionMethod",
+    "verificationMethod": "did:dcc:2757945549477fc571663bee12042873fe555b674bd294a3#2368332668#key",
+    "jws": "HG21J4fdlnBvBA+y6D...amP7O="
+  }
+}

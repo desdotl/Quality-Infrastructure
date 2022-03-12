@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/0_credentialSchema/schema.json",
+  "title": "Verifiable Credential DCC",
+  "description": "Schema on DCC Verifiable Credential",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "description": "Defines semantic context of the Verifiable Credential",
+      "type": "array",
+      "minItems":2,
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "default":["https://www.w3.org/2018/credentials/v1","https://qualityinfrastructure.com/schemas/10814f6af155217f0807f6f330cb325d04592cb7e3906bcd0489d44a3f417aa2"]
+      }
+    },
+    "id": {
+      "description": "Defines unique identifier of the Verifiable Credential",
+      "type": "string",
+      "format": "uri",
+      "default":"https://ipfs.io/ipfs/Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu"
+    },
+    "type": {
+      "description": "Defines the Verifiable Credential type",
+      "type": "array",
+      "minItems":1,
+      "items": {
+        "type": "string",
+        "default":"VerifiableCredential"
+      }
+    },
+    "issuer": {
+      "description": "Defines the issuer of the Verifiable Credential",
+      "type": "string",
+      "format": "uri",
+      "default": "did:dcc:0xe88357BF682d965a38CE41d00085C05412d25936",
+      "pattern": "^(did:dcc:0x)([a-zA-Z0-9]{40})$"
+    },
+    "issuanceDate": {
+      "description": "Defines the date and time, when the Verifiable Credential becomes valid",
+      "type": "string",
+      "format": "date-time",
+      "default":"2022-05-07T01:01:01Z"
+    },
+    "expirationDate": {
+      "description": "Defines the date and time, when the Verifiable Credential expires",
+      "type": "string",
+      "format": "date-time",
+      "default":"2025-01-01T01:01:01Z"
+    },
+    "credentialSubject": {
+      "description": "Contains the claim of Verifiable Credential",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Subject DID",
+          "type": "string",
+          "format": "uri",
+          "default": "did:dcc:0xe88357BF682d965a38CE41d00085C05412d25936",
+          "pattern": "^(did:dcc:0x)([a-zA-Z0-9]{40})$"
+        }
+      },
+      "required": ["id"]
+    },  
+    "credentialSchema": {
+      "description": "Contains information about the credential schema (template) on which the Verifiable Credential is based",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "References the credential schema (template) stored on the (relevant) Schemas Registry (SR) on which the Verifiable Credential is based",
+          "type": "string",
+          "format": "uri",
+          "default":"https://qualityinfrastructure.com/schemas/325d04592cb7e3906bcd0489d4410814f6af155217f0807f6f330cba3f417aa2"
+        },
+        "type": {
+          "description": "Defines credential schema type",
+          "type": "string",
+          "enum": ["FullJsonSchemaValidator2021"]
+        }
+      },
+      "required": ["id", "type"]
+    },
+    "evidence": {
+      "description": "Contains information about the process which resulted in the issuance of the Verifiable Credential",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "If present, it MUST contain a URL that points to where more information about this instance of evidence can be found.",
+            "type": "string"
+          },
+          "type": {
+            "description": "Defines the evidence type",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "verifier": {
+            "description": "Defines entity which has verified documents before Verifiable Credential issuance",
+            "type": "string"
+          },
+          "evidenceDocument": {
+            "description": "Defines document(s) which have been verified before Verifiable Credential issuance",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "subjectPresence": {
+            "description": "Defines if the Verifiable Credential subject was physically present in the course of the verification",
+            "type": "string"
+          },
+          "documentPresence": {
+            "description": "Defines how the document(s) which have been verified before Verifiable Credential issuance have been provided (e.g. physically, digitally)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "verifier",
+          "evidenceDocument",
+          "subjectPresence",
+          "documentPresence"
+        ]
+      }
+    },
+    "proof": {
+      "description": "Contains information about the proof",
+      "type": "object",
+      "properties": {	
+        "type": {
+          "description": "Defines the proof type(E.G. EcdsaSecp256k1)",
+          "type": "string",
+          "default":"EcdsaSecp256k1Signature2019"
+        },
+        "created":{
+          "description": "Defines the date and time, when the Verifiable Credential becomes valid",
+          "type": "string",
+          "format": "date-time",
+          "default":"2025-01-01T01:01:01Z"
+        },
+        "proofPurpose": {
+          "description": "Defines the purpose of the proof",
+          "type": "string",
+          "default":"assertionMethod"
+        },
+        "verificationMethod": {
+          "description": "Contains information about the verification method public key of the issuer",
+          "type": "string",
+          "default":"0xdfd7ed8e098d68d202b48c58f0132e3cc2fe4484#key-1",
+          "pattern":"^(0x)([a-zA-Z0-9]{40})(#key-[0-9])?$"
+        },
+        "domain":{
+          "description": "Contains address to the verifier contract",
+          "type": "string",
+          "default":"0x7a746D34754C14EB3eb1F214BD0EA23a1A18Be7A",
+          "pattern":"^(0x)([a-zA-Z0-9]{40})$"
+        },
+        "proofValue": {
+          "description": "Defines the proof value in JWS format or EIP-712/EIP-1812",
+          "type": "string",
+          "default": "0x537570657263616c6966726167696c697374696365787069616c69646f63696f537570657263616c6966726167696c697374696365787069616c69646f63696fc2",
+          "pattern":"^(0x)([a-z0-9]{130})$"
+        }
+      },
+      "required": [
+        "type",
+        "proofPurpose",
+        "created",
+        "verificationMethod",
+        "proofValue"
+      ]
+    }
+  },
+  "required": [
+    "@context",
+    "id",
+    "type",
+    "issuer",
+    "issuanceDate",
+    "expirationDate",
+    "credentialSubject",
+    "credentialSchema",
+    "proof"
+  ]
+}

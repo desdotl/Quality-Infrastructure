@@ -1,0 +1,63 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://essif.europa.eu/schemas/vc/2020/v1"
+  ],
+  "id": "9cc5de638483b601074d591b2762e21635a03dd17375760f1aff7229391d8efe",
+  "type": [
+    "VerifiableCredential",
+    "VerifiableAccreditation",
+    "DCCVerifiableAccreditation"
+  ],
+  "issuer": "did:dcc:00001234",
+  "issuanceDate": "2020-06-22T14:11:44Z",
+  "credentialSubject": {
+    "id": "did:dcc:00001235",
+    "authorizationClaims": {
+      "credentialSchemaId":["https://dcc.com/tsr/9cc5de638483b601074d591b2762e21635a03dd17375760f1aff7229391d8efe"],
+      "accreditationType": ["CalibrationCertificanceAccreditation"],
+      "report": ["https://www.example.com/URLtoreport.pdf"],
+      "limitQualification": [
+        {
+          "id": "http://qualdb.org/qual/1",
+          "title": "Gas flow meter calibration",
+          "Class":"Working Standard",
+          "CMC": [
+            { "si-unit":"Pa",
+              "interval":{
+                "min":"300000",
+                "max":"800000"},
+                "minUncertainity":"0.21"
+            },
+            { "si-unit":"Pa",
+              "interval":{
+                "min":"800000",
+                "max":"6500000"},
+                "minUncertainity":"0.20"
+            }
+          ]
+
+        }
+      ],
+      "limitJurisdiction": [
+        "http://publications.europa.eu/resource/authority/atu/ITA"
+      ],
+      "reviewDate": "2026-02-23T14:11:44Z"
+    }
+  },
+
+  "expirationDate": "2026-04-23T14:11:44Z",
+  "validFrom": "2022-02-23T00:00:00Z",
+  "credentialSchema": {
+    "id": "https://dcc.com/tsr/9cc5de638483b601074d591b2762e21635a03dd17375760f1aff7229391d8efe",
+    "type": "FullJsonSchemaValidator2021"
+  },
+  "proof": {
+    "type": "JWT#ES256K",
+    "created": "2019-06-22T14:11:44Z",
+    "proofPurpose": "assertionMethod",
+    "verificationMethod": "did:dcc:00001234#key",
+    "jws": "eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TCYt5X"
+   
+  }
+}

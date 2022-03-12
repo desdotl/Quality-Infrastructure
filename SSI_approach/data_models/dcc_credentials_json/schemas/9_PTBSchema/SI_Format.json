@@ -1,0 +1,751 @@
+{
+    "$schema": "https://json-schema.org/draft-04/schema#",
+    "id": "https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/9_PTBSchema/SI_Format.json",
+    "definitions": {
+        "constantQuantityType": {
+            "type": "object",
+            "required": [
+                "value",
+                "unit"
+            ],
+            "properties": {
+                "label": {"type": "string"},
+                "value": {"type": "number"},
+                "unit": {"type": "string"},
+                "dateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "uncertainty": {"type": "number"},
+                "distribution": {"type": "string"}
+            }
+        },
+        "covarianceMatrixType.column.covariance": {
+            "type": "object",
+            "required": [
+                "value",
+                "unit"
+            ],
+            "properties": {
+                "value": {"type": "number"},
+                "unit": {"type": "string"}
+            }
+        },
+        "covarianceMatrixType.column": {
+            "type": "object",
+            "required": ["covariance"],
+            "properties": {
+                "covariance": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/covarianceMatrixType.column.covariance"},
+                    "minItems": 1
+                }
+            }
+        },
+        "covarianceMatrixType": {
+            "type": "object",
+            "required": ["column"],
+            "properties": {
+                "column": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/covarianceMatrixType.column"},
+                    "minItems": 1
+                }
+            }
+        },
+        "ellipsoidalRegionType": {
+            "type": "object",
+            "required": [
+                "covarianceMatrix",
+                "coverageFactor",
+                "coverageProbability"
+            ],
+            "properties": {
+                "covarianceMatrix": {"$ref": "#/definitions/covarianceMatrixType"},
+                "coverageFactor": {"type": "number"},
+                "coverageProbability": {"type": "number"},
+                "distribution": {"type": "string"}
+            }
+        },
+        "rectangularRegionType": {
+            "type": "object",
+            "required": [
+                "covarianceMatrix",
+                "coverageFactor",
+                "coverageProbability"
+            ],
+            "properties": {
+                "covarianceMatrix": {"$ref": "#/definitions/covarianceMatrixType"},
+                "coverageFactor": {"type": "number"},
+                "coverageProbability": {"type": "number"},
+                "distribution": {"type": "string"}
+            }
+        },
+        "listBivariateUncType": {
+            "type": "object",
+            "required": [
+                "ellipsoidalRegion",
+                "rectangularRegion"
+            ],
+            "properties": {
+                "ellipsoidalRegion": {"$ref": "#/definitions/ellipsoidalRegionType"},
+                "rectangularRegion": {"$ref": "#/definitions/rectangularRegionType"}
+            }
+        },
+        "complexInListType": {
+            "type": "object",
+            "required": ["Content"],
+            "properties": {
+                "Content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "dateTime": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "valueImag": {"type": "number"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "valueMagnitude": {"type": "number"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "label": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "rectangularRegion": {"$ref": "#/definitions/rectangularRegionType"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "valuePhase": {"type": "number"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "unitPhase": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "valueReal": {"type": "number"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "unit": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "ellipsoidalRegion": {"$ref": "#/definitions/ellipsoidalRegionType"}
+                                }
+                            }
+                        ]
+                    },
+                    "maxItems": 7,
+                    "minItems": 2
+                }
+            }
+        },
+        "complexListType": {
+            "type": "object",
+            "required": [
+                "complex",
+                "ellipsoidalRegion",
+                "rectangularRegion"
+            ],
+            "properties": {
+                "label": {"type": "string"},
+                "dateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "listUnit": {"type": "string"},
+                "listUnitPhase": {"type": "string"},
+                "listBivariateUnc": {"$ref": "#/definitions/listBivariateUncType"},
+                "complex": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/complexInListType"},
+                    "minItems": 1
+                },
+                "ellipsoidalRegion": {"$ref": "#/definitions/ellipsoidalRegionType"},
+                "rectangularRegion": {"$ref": "#/definitions/rectangularRegionType"}
+            }
+        },
+        "expandedUncType": {
+            "type": "object",
+            "required": [
+                "uncertainty",
+                "coverageFactor",
+                "coverageProbability"
+            ],
+            "properties": {
+                "uncertainty": {"type": "number"},
+                "coverageFactor": {"type": "number"},
+                "coverageProbability": {"type": "number"},
+                "distribution": {"type": "string"}
+            }
+        },
+        "coverageIntervalType": {
+            "type": "object",
+            "required": [
+                "standardUnc",
+                "intervalMin",
+                "intervalMax",
+                "coverageProbability"
+            ],
+            "properties": {
+                "standardUnc": {"type": "number"},
+                "intervalMin": {"type": "number"},
+                "intervalMax": {"type": "number"},
+                "coverageProbability": {"type": "number"},
+                "distribution": {"type": "string"}
+            }
+        },
+        "realQuantityType": {
+            "type": "object",
+            "required": [
+                "value",
+                "unit",
+                "expandedUnc",
+                "coverageInterval"
+            ],
+            "properties": {
+                "label": {"type": "string"},
+                "value": {"type": "number"},
+                "unit": {"type": "string"},
+                "dateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "expandedUnc": {"$ref": "#/definitions/expandedUncType"},
+                "coverageInterval": {"$ref": "#/definitions/coverageIntervalType"}
+            }
+        },
+        "listUnivariateUncType": {
+            "type": "object",
+            "required": [
+                "expandedUnc",
+                "coverageInterval"
+            ],
+            "properties": {
+                "expandedUnc": {"$ref": "#/definitions/expandedUncType"},
+                "coverageInterval": {"$ref": "#/definitions/coverageIntervalType"}
+            }
+        },
+        "realInListType": {
+            "type": "object",
+            "required": [
+                "value",
+                "expandedUnc",
+                "coverageInterval"
+            ],
+            "properties": {
+                "label": {"type": "string"},
+                "value": {"type": "number"},
+                "unit": {"type": "string"},
+                "dateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "expandedUnc": {"$ref": "#/definitions/expandedUncType"},
+                "coverageInterval": {"$ref": "#/definitions/coverageIntervalType"}
+            }
+        },
+        "realListType": {
+            "type": "object",
+            "required": [
+                "real",
+                "ellipsoidalRegion",
+                "rectangularRegion"
+            ],
+            "properties": {
+                "label": {"type": "string"},
+                "dateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "listUnit": {"type": "string"},
+                "listUnivariateUnc": {"$ref": "#/definitions/listUnivariateUncType"},
+                "real": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/realInListType"},
+                    "minItems": 1
+                },
+                "ellipsoidalRegion": {"$ref": "#/definitions/ellipsoidalRegionType"},
+                "rectangularRegion": {"$ref": "#/definitions/rectangularRegionType"}
+            }
+        },
+        "SIlistType": {
+            "type": "object",
+            "required": ["realListOrcomplexListOrlist"],
+            "properties": {
+                "label": {"type": "string"},
+                "dateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "realListOrcomplexListOrlist": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/definitions/realListType"},
+                            {"$ref": "#/definitions/complexListType"},
+                            {"$ref": "#/definitions/SIlistType"}
+                        ]
+                    },
+                    "minItems": 1
+                }
+            }
+        },
+        "expandedUncXMLListType": {
+            "type": "object",
+            "required": [
+                "uncertaintyXMLList",
+                "coverageFactorXMLList",
+                "coverageProbabilityXMLList"
+            ],
+            "properties": {
+                "uncertaintyXMLList": {
+                    "type": "array",
+                    "items": {"type": "number"}
+                },
+                "coverageFactorXMLList": {
+                    "type": "array",
+                    "items": {"type": "number"}
+                },
+                "coverageProbabilityXMLList": {
+                    "type": "array",
+                    "items": {"type": "number"}
+                },
+                "distributionXMLList": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "coverageIntervalXMLListType": {
+            "type": "object",
+            "required": [
+                "standardUncXMLList",
+                "intervalMinXMLList",
+                "intervalMaxXMLList",
+                "coverageProbabilityXMLList"
+            ],
+            "properties": {
+                "standardUncXMLList": {
+                    "type": "array",
+                    "items": {"type": "number"}
+                },
+                "intervalMinXMLList": {
+                    "type": "array",
+                    "items": {"type": "number"}
+                },
+                "intervalMaxXMLList": {
+                    "type": "array",
+                    "items": {"type": "number"}
+                },
+                "coverageProbabilityXMLList": {
+                    "type": "array",
+                    "items": {"type": "number"}
+                },
+                "distributionXMLList": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "realListXMLListType": {
+            "type": "object",
+            "required": [
+                "valueXMLList",
+                "unitXMLList",
+                "expandedUncXMLList",
+                "coverageIntervalXMLList",
+                "ellipsoidalRegionXMLList",
+                "rectangularRegionXMLList"
+            ],
+            "properties": {
+                "labelXMLList": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "valueXMLList": {
+                    "type": "array",
+                    "items": {"type": "number"}
+                },
+                "unitXMLList": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "dateTimeXMLList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "expandedUncXMLList": {"$ref": "#/definitions/expandedUncXMLListType"},
+                "coverageIntervalXMLList": {"$ref": "#/definitions/coverageIntervalXMLListType"},
+                "ellipsoidalRegionXMLList": {"$ref": "#/definitions/ellipsoidalRegionType"},
+                "rectangularRegionXMLList": {"$ref": "#/definitions/rectangularRegionType"}
+            }
+        },
+        "complexQuantityType": {
+            "type": "object",
+            "required": ["Content"],
+            "properties": {
+                "Content": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "valuePhase": {"type": "number"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "dateTime": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "valueReal": {"type": "number"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "unit": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "valueImag": {"type": "number"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "label": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "valueMagnitude": {"type": "number"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "unitPhase": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "ellipsoidalRegion": {"$ref": "#/definitions/ellipsoidalRegionType"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "rectangularRegion": {"$ref": "#/definitions/rectangularRegionType"}
+                                }
+                            }
+                        ]
+                    },
+                    "maxItems": 7,
+                    "minItems": 3
+                }
+            }
+        },
+        "hybridType": {
+            "type": "object",
+            "required": [
+                "real",
+                "complex",
+                "list",
+                "realList",
+                "realListXMLList",
+                "complexList",
+                "constant"
+            ],
+            "properties": {
+                "real": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/realQuantityType"},
+                    "minItems": 1
+                },
+                "complex": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/complexQuantityType"},
+                    "minItems": 1
+                },
+                "list": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/SIlistType"},
+                    "minItems": 1
+                },
+                "realList": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/realListType"},
+                    "minItems": 1
+                },
+                "realListXMLList": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/realListXMLListType"},
+                    "minItems": 1
+                },
+                "complexList": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/complexListType"},
+                    "minItems": 1
+                },
+                "constant": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/constantQuantityType"},
+                    "minItems": 1
+                }
+            }
+        }
+    },
+    "anyOf": [
+        {
+            "type": "object",
+            "properties": {
+                "constant": {"$ref": "#/definitions/constantQuantityType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "complexList": {"$ref": "#/definitions/complexListType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "real": {"$ref": "#/definitions/realQuantityType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "realList": {"$ref": "#/definitions/realListType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "expandedUnc": {"$ref": "#/definitions/expandedUncType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "list": {"$ref": "#/definitions/SIlistType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "rectangularRegion": {"$ref": "#/definitions/rectangularRegionType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "realListXMLList": {"$ref": "#/definitions/realListXMLListType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "coverageInterval": {"$ref": "#/definitions/coverageIntervalType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "hybrid": {"$ref": "#/definitions/hybridType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "covarianceMatrix": {"$ref": "#/definitions/covarianceMatrixType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "complex": {"$ref": "#/definitions/complexQuantityType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "ellipsoidalRegion": {"$ref": "#/definitions/ellipsoidalRegionType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "label": {"type": "string"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "valueReal": {"type": "number"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "valueImag": {"type": "number"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "unit": {"type": "string"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "valueMagnitude": {"type": "number"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "valuePhase": {"type": "number"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "unitPhase": {"type": "string"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "dateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "ellipsoidalRegion": {"$ref": "#/definitions/ellipsoidalRegionType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "rectangularRegion": {"$ref": "#/definitions/rectangularRegionType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "label": {"type": "string"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "valueReal": {"type": "number"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "valueImag": {"type": "number"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "unit": {"type": "string"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "valueMagnitude": {"type": "number"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "valuePhase": {"type": "number"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "unitPhase": {"type": "string"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "dateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "ellipsoidalRegion": {"$ref": "#/definitions/ellipsoidalRegionType"}
+            }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "rectangularRegion": {"$ref": "#/definitions/rectangularRegionType"}
+            }
+        }
+    ]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema",
+  "$id":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/4_VerifiableDCCSchema/schema_full.json",
+  "title": "DCC Verifiable Credential",
+  "description": "DCC  Verifiable Credential schema",
+  "definitions": {
+    "credentialSubject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Refer to the subject DID",
+          "type": "string",
+          "format": "uri",
+          "default": "did:dcc:0xe88357BF682d965a38CE41d00085C05412d25936",
+          "pattern": "^(did:dcc:0x)([a-zA-Z0-9]{40})$"
+        },
+        "certificationClaims": {
+          "description": "Defines a list of claims that define/determine the DCC VCs. Mandatory",
+          "type": "object",
+          "required": [ "digitalCalibrationCertificate"],
+          "properties":{
+            "digitalCalibrationCertificate": {"$ref": "https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/9_PTBSchema/dcc.json#/definitions/digitalCalibrationCertificateType"}
+          }     
+        },
+        "domain":{
+          "description": "Defines the Domain of Delegation (compatible with EIP712-EIP1812)",
+          "type": "string",
+          "format": "uri"
+        },
+        "domainName":{
+          "description": "Defines the Domain of Delegation Name (compatible with EIP712-EIP1812)",
+          "type": "string"
+        } 
+      },
+      "required": ["id", "certificationClaims"]
+    }
+  },
+  "type": "object",
+  "required": ["credentialSubject"],
+  "properties": {
+    "credentialSubject":{"$ref": "#/definitions/credentialSubject"}
+  }
+}
