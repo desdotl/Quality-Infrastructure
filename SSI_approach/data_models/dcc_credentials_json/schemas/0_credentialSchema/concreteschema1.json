@@ -1,6 +1,5 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/0_credentialSchema/schema.json",
   "title": "Verifiable Credential DCC",
   "description": "Schema on DCC Verifiable Credential",
   "type": "object",
@@ -8,12 +7,15 @@
     "@context": {
       "description": "Defines semantic context of the Verifiable Credential",
       "type": "array",
-      "minItems":2,
-      "default":["https://www.w3.org/2018/credentials/v1","https://qualityinfrastructure.com/schemas/credential/v1"],
-      "items": {
+      "uniqueItems": true,
+      "items": [
+        {"$ref": "https://www.w3.org/2018/credentials/v1"},
+        {"$ref": "https://qualityinfrastructure.com/schemas/credential/v1"}
+      ],
+      "additionalItems": {
         "type": "string",
-        "format": "uri"
-      }
+         "format": "uri"
+        }
     },
     "id": {
       "description": "Defines unique identifier of the Verifiable Credential",
