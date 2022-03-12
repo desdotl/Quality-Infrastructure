@@ -58,14 +58,14 @@
     },
     "credentialSubject": {
       "oneOf": [
-        {"$ref":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/1_SimpleVerifiableCredentialSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/2_VerifiableAccreditationSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/3_LaboratoryVerifiableAccreditationSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/4_VerifiableDCCSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/4_VerifiableDCCSchema/schema_full.json#/definitions/credentialSubject"},
-        {"$ref":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/5_VerifiableIDSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/6_VerifiableDeviceIdSchema/schema.json#/definitions/credentialSubject"},
-        {"$ref":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/7_VerifiableDelegationSchema/schema.json#/definitions/credentialSubject"}
+        {"$ref":"../1_SimpleVerifiableCredentialSchema/schema.json#/definitions/credentialSubject"},
+        {"$ref":"../2_VerifiableAccreditationSchema/schema.json#/definitions/credentialSubject"},
+        {"$ref":"../3_LaboratoryVerifiableAccreditationSchema/schema.json#/definitions/credentialSubject"},
+        {"$ref":"../4_VerifiableDCCSchema/schema.json#/definitions/credentialSubject"},
+        {"$ref":"../4_VerifiableDCCSchema/schema_full.json#/definitions/credentialSubject"},
+        {"$ref":"../5_VerifiableIDSchema/schema.json#/definitions/credentialSubject"},
+        {"$ref":"../6_VerifiableDeviceIdSchema/schema.json#/definitions/credentialSubject"},
+        {"$ref":"../7_VerifiableDelegationSchema/schema.json#/definitions/credentialSubject"}
       ]
     },  
     "credentialSchema": {
