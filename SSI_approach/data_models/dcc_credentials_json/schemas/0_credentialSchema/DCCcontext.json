@@ -1,0 +1,22 @@
+
+{
+  "@version": 1.1,
+  "@protected": true,
+  
+  "description": "Context on DCC Verifiable Credential",
+
+  "proof": {
+    "@id": "https://www.w3.org/2018/credentials/v1/proof",
+    "@context": {
+      "@version": 1.1,
+      "@protected": true,
+
+      "domain":{
+        "description": "Contains address to the verifier contract",
+        "type": "string",
+        "default":"0x7a746D34754C14EB3eb1F214BD0EA23a1A18Be7A",
+        "pattern":"^(0x)([a-zA-Z0-9]{40})$"
+      }
+    }
+  }
+}
