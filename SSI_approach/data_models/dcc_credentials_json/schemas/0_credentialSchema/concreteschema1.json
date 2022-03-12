@@ -57,7 +57,9 @@
       "default":"2025-01-01T01:01:01Z"
     },
     "credentialSubject": {
-      "type":"object"
+      "oneOf": [
+        {"$ref":"../1_SimpleVerifiableCredentialSchema/schema_prova.json#"}
+      ]
     },  
     "credentialSchema": {
       "description": "Contains information about the credential schema (template) on which the Verifiable Credential is based",
