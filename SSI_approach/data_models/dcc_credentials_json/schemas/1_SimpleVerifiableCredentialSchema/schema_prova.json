@@ -1,6 +1,5 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/1_SimpleVerifiableCredentialSchema/schema.json",
   "title": "Verifiable Records",
   "description": "Schema of a Simple Verifiable Credential",
   "type": "object",
