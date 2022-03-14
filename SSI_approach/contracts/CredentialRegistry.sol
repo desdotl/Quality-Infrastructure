@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.0;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 import "./ICredentialRegistry.sol";
 
 contract CredentialRegistry is ICredentialRegistry, AccessControl {
@@ -18,9 +18,9 @@ contract CredentialRegistry is ICredentialRegistry, AccessControl {
         
         CredentialMetadata storage credential = credentials[_credentialHash];
        
-        require(credential.subject == address(0)&& credential.issurer == address(0)&& credential.signer == address(0), "Credential already exists");
-        credential.subject = _issuer;
-        credential.subject = _signer;
+        require(credential.subject == address(0)&& credential.issuer == address(0)&& credential.signer == address(0), "Credential already exists");
+        credential.issuer = _issuer;
+        credential.signer = _signer;
         credential.subject = _subject;
         credential.validFrom = _from;
         credential.validTo = _exp;
@@ -32,9 +32,9 @@ contract CredentialRegistry is ICredentialRegistry, AccessControl {
     }
 
     function revokeCredential(bytes32 _credentialHash) external override returns (bool) {
-        
-        require(credential.subject != address(0), "credential hash doesn't exist");
-        require(credential.status, "Credential is already revoked");
+       
+        require(credentials[_credentialHash].subject != address(0), "credential hash doesn't exist");
+        require(credentials[_credentialHash].status, "Credential is already revoked");
         credentials[_credentialHash].status = false;
         emit CredentialRevoked(_credentialHash, msg.sender, block.timestamp);
         return true;
@@ -42,19 +42,29 @@ contract CredentialRegistry is ICredentialRegistry, AccessControl {
 
     function exist(bytes32 _credentialHash) override external view returns (bool){
         
-        return (credential.subject != address(0) && credential.issurer != address(0) && credential.signer != address(0));
+        return (credentials[_credentialHash].subject != address(0) && credentials[_credentialHash].issuer != address(0) && credentials[_credentialHash].signer != address(0));
     }
 
     function status(bytes32 _credentialHash) override external view returns (bool){
         return credentials[_credentialHash].status;
     }
 
-    function getSigner(bytes32 _digest, uint8 _v, bytes32 _r, bytes32 _s) external pure returns (address issuer){
-        return ecrecover(_digest, _v, _r, _s);
+    function validPeriod(bytes32 _credentialHash) override external view returns (bool){
+         return (credentials[_credentialHash].validFrom <= block.timestamp) && (block.timestamp < credentials[_credentialHash].validTo);
     }
 
-    function getCredential(bytes32 _credentialHash) external view returns (CredentialMetadata calldata) {
-        return  credentials[_credentialHash];
+    function getSigner(bytes32 _digest, uint8 _v, bytes32 _r, bytes32 _s) external pure returns (address ){
+        return ecrecover(_digest, _v, _r, _s);
+    }
+    function getSigner(bytes32 _digest) external view returns (address issuer){
+        return credentials[_digest].signer;
+    }
+    function getIssuer(bytes32 _digest) external view returns (address issuer){
+        return credentials[_digest].issuer;
+    }
+    function getCredential(bytes32 _credentialHash) external view returns (address ,address , address  , uint256 , uint256 ,bytes32 ) {
+        CredentialMetadata memory  credential =  credentials[_credentialHash];
+        return  (credential.issuer,credential.signer,credential.subject,credential.validFrom,credential.validTo,credential.ipfsHash);
     }
 
     modifier onlyIssuer() {

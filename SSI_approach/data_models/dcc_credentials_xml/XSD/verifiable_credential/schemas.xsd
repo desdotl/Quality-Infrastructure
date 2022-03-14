@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+    targetNamespace="http://metrologyinfrastructure/model/credentials/schemas#"
+    xmlns="http://metrologyinfrastructure/model/credentials/schemas#"
+    xmlns:schemas="http://metrologyinfrastructure/model/credentials/schemas#"
+    xmlns:cred="http://metrologyinfrastructure/model/credentials/w3c#"
+    xmlns:mcvc="http://metrologyinfrastructure/model/credentials/context"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+    xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:dcc="https://ptb.de/dcc"
+    xmlns:dsoa="http://metrologyinfrastructure/lib/dsoa">
+
+    <xs:import namespace="https://ptb.de/dcc" schemaLocation="../lib/dcc.xsd"/>
+    <xs:import namespace="http://metrologyinfrastructure/lib/dsoa" schemaLocation="../lib/dsoa.xsd"/>
+    <xs:import namespace="http://metrologyinfrastructure/model/credentials/context"
+        schemaLocation="contex.xsd"/>
+    <xs:import namespace="http://metrologyinfrastructure/model/credentials/w3c#"
+        schemaLocation="w3c.xsd"/>
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#"
+        schemaLocation="../lib/xmldsig-core-schema.xsd"/>
+
+    <xs:complexType name="DccCredentialSubjectType">
+
+
+        <xs:complexContent>
+            <xs:extension base="cred:CredentialSubjectType">
+                <xs:sequence>
+                    <xs:element ref="dcc:digitalCalibrationCertificate"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DccVerifiableCredentialType">
+        <xs:complexContent>
+            <xs:extension base="cred:CredentialType">
+                <xs:sequence>
+                    <xs:element name="credentialSubject" type="DccCredentialSubjectType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+
+
+    </xs:complexType>
+    <xs:complexType name="DsoaCredentialSubjectType">
+
+
+        <xs:complexContent>
+            <xs:extension base="cred:CredentialSubjectType">
+                <xs:sequence>
+                    <xs:element name="DigitalAccreditationClaim"
+                        type="dsoa:digitalAccreditationCertificateType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="DsoaVerifiableCredentialType">
+        <xs:complexContent>
+            <xs:extension base="cred:CredentialType">
+                <xs:sequence>
+                    <xs:element name="credentialSubject" type="DsoaCredentialSubjectType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+
+
+    </xs:complexType>
+    <xs:element name="DccVerifiableCredential" type="DccVerifiableCredentialType"/>
+    <xs:element name="DsoaVerifiableCredential" type="DsoaVerifiableCredentialType"/>
+</xs:schema>

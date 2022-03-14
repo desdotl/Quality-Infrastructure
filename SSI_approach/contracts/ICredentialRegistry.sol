@@ -5,7 +5,7 @@ pragma solidity 0.8.0;
 interface ICredentialRegistry {
 
     struct CredentialMetadata {
-        address issurer;
+        address issuer;
         address signer;
         address subject;
         uint256 validFrom;
@@ -21,6 +21,8 @@ interface ICredentialRegistry {
     function exist(bytes32 _credentialHash) external view returns (bool);
 
     function status(bytes32 _credentialHash) external view returns (bool);
+
+    function validPeriod(bytes32 _credentialHash) external view returns (bool);
 
     event CredentialRegistered(bytes32 indexed credentialHash, address issuer, address signer, address subject, uint iat, bytes32 _ipfsHash);
     event CredentialRevoked(bytes32 indexed credentialHash, address by, uint256 date);

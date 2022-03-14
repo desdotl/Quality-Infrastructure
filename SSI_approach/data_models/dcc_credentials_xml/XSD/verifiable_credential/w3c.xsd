@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- xsd version '0.8.0' based on edci model version '0.7.0' -->
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+    targetNamespace="http://metrologyinfrastructure/model/credentials/w3c#"
+    xmlns="http://metrologyinfrastructure/model/credentials/w3c#"
+    xmlns:cred="http://metrologyinfrastructure/model/credentials/w3c#"
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:mcvc="http://metrologyinfrastructure/model/credentials/context"
+    xmlns:dcc="https://ptb.de/dcc">
+
+    <xs:import namespace="https://ptb.de/dcc" schemaLocation="../lib/dcc.xsd"/>
+    <xs:import namespace="http://metrologyinfrastructure/model/credentials/context"
+        schemaLocation="contex.xsd"/>
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#"
+        schemaLocation="../lib/xmldsig-core-schema.xsd"/>
+
+
+    <xs:annotation>
+        <xs:documentation>The W3C Verifiable Credential Recommendation does not provide an XML
+            Schema for describing Verifiable Credentials.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="CredentialTypeType">
+        <xs:complexContent>
+            <xs:extension base="mcvc:AbstractCodeType">
+                <xs:attribute name="targetFrameworkUrl" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ChildCredentialDefinedAsAnyType">
+        <xs:annotation>
+            <xs:documentation>Can contain any wellformed xml structure. Any wellformed xml content
+                model can be included. It will not be validated by this schema. The xml header of
+                the original credential xml document must be encoded (i.e.
+                <![CDATA[<?xml version="1.0" encoding="UTF-8"?>]]>)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="xs:anyType">
+                <xs:attribute name="id" type="xs:ID" use="required">
+                    <xs:annotation>
+                        <xs:documentation>Random and unique id within the scope of this document.
+                            Can be used to link to this verifiableCredential record from other
+                            places in the parent credential document
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ChildCredentialsType">
+        <xs:annotation>
+            <xs:documentation>Container element that records all the included child
+                credentials.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="childCredential"
+                type="ChildCredentialDefinedAsAnyType">
+                <xs:annotation>
+                    <xs:documentation>Element that can contains any xml credential of any type and
+                        structure. It will not be validated by this schema.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType abstract="true" name="CredentialSubjectType">
+        <xs:annotation>
+            <xs:documentation>Abstract Credential Subject Type</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="ID" type="mcvc:IdentifierType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CredentialType" abstract="false">
+        <xs:annotation>
+            <xs:documentation/>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="identifier"
+                type="mcvc:IdentifierType">
+                <xs:annotation>
+                    <xs:documentation>A portable identifier of the credential. (i.e. a urn in the
+                    uuid namespace,
+                    urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="1" name="type"
+                type="CredentialTypeType">
+                <xs:annotation>
+                    <xs:documentation>The type of credential. A concept indicating the type of
+                        credential.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="validFrom" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation>The valid from date. The value of validFrom property
+                        represents the date and time from which the credential is
+                        valid.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="issued" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation>The issued date. A verifiable credential MUST have an
+                        issuedDate property. The value represents the date and time the credential
+                        was issued. Note that this date represents the earliest date when the
+                        information associated with the credentialSubject property became valid.
+                        This is not the date of generation of the credential.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="validUntil" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation>The valid until date. The value of the validUntil property
+                        represents the date and time the credential ceases to be
+                        valid.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="issuer" type="mcvc:IdReferenceType">
+                <xs:annotation>
+                    <xs:documentation>The issuer of the credential. May be an organization or a delegate.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="1" name="title"
+                type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>The credential title. Maximum cardinality of one per
+                        language.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="description"
+                type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>A summary of the credential. Maximum cardinality of one per
+                        language.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="proof"
+                type="ds:SignatureType">
+                <xs:annotation>
+                    <xs:documentation>Any proof within this credential should follow the XAdES xsd
+                        provided at
+                        https://uri.etsi.org/01903/v1.3.2/XAdES01903v132-201601.xsd
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="childCredentials"
+                type="ChildCredentialsType">
+                <xs:annotation>
+                    <xs:documentation>Container element that records all the verifiable child
+                        credentials included in this credential
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

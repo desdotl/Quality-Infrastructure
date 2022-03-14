@@ -1,0 +1,983 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "stringWithLangType": {
+            "type": "object",
+            "properties": {
+                "Value": {"type": "string"},
+                "lang": {"type": "string"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "textType": {
+            "type": "object",
+            "required": ["content"],
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/stringWithLangType"},
+                    "minItems": 1
+                },
+                "id": {"type": "string"}
+            }
+        },
+        "byteDataType": {
+            "type": "object",
+            "required": [
+                "fileName",
+                "mimeType",
+                "dataBase64"
+            ],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "fileName": {"type": "string"},
+                "mimeType": {"type": "string"},
+                "dataBase64": {
+                    "type": "array",
+                    "items": {"type": "integer"}
+                },
+                "id": {"type": "string"}
+            }
+        },
+        "xmlType": {
+            "type": "object",
+            "properties": {
+                "Any": {"type": "object"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "formulaType": {
+            "type": "object",
+            "required": [
+                "latex",
+                "mathml"
+            ],
+            "properties": {
+                "latex": {"type": "string"},
+                "mathml": {"$ref": "#/definitions/xmlType"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "richContentType": {
+            "type": "object",
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "contentAndfileAndformula": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/definitions/stringWithLangType"},
+                            {"$ref": "#/definitions/byteDataType"},
+                            {"$ref": "#/definitions/formulaType"}
+                        ]
+                    },
+                    "minItems": 0
+                },
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "softwareType": {
+            "type": "object",
+            "required": [
+                "name",
+                "release"
+            ],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "release": {"type": "string"},
+                "type": {
+                    "allOf": [
+                        {"type": "string"},
+                        {
+                            "enum": [
+                                "application",
+                                "bios",
+                                "driver",
+                                "editor",
+                                "firmware",
+                                "library",
+                                "os",
+                                "other"
+                            ]
+                        }
+                    ]
+                },
+                "description": {"$ref": "#/definitions/richContentType"},
+                "id": {"type": "string"},
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "softwareListType": {
+            "type": "object",
+            "required": ["software"],
+            "properties": {
+                "software": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/softwareType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "identificationType": {
+            "type": "object",
+            "required": [
+                "issuer",
+                "value"
+            ],
+            "properties": {
+                "issuer": {
+                    "allOf": [
+                        {"type": "string"},
+                        {
+                            "enum": [
+                                "manufacturer",
+                                "calibrationLaboratory",
+                                "customer",
+                                "owner",
+                                "other"
+                            ]
+                        }
+                    ]
+                },
+                "value": {"type": "string"},
+                "name": {"$ref": "#/definitions/textType"},
+                "id": {"type": "string"},
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "identificationListType": {
+            "type": "object",
+            "required": ["identification"],
+            "properties": {
+                "identification": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/identificationType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "performanceLocationType": {
+            "type": "object",
+            "properties": {
+                "Value": {"$ref": "#/definitions/stringPerformanceLocationType"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "hashType": {
+            "type": "object",
+            "required": [
+                "referral",
+                "referralID",
+                "procedure",
+                "value"
+            ],
+            "properties": {
+                "referral": {"$ref": "#/definitions/textType"},
+                "referralID": {"type": "string"},
+                "procedure": {"type": "string"},
+                "value": {"type": "string"},
+                "linkedReport": {"$ref": "#/definitions/hashType"},
+                "id": {"type": "string"}
+            }
+        },
+        "coreDataType": {
+            "type": "object",
+            "required": [
+                "countryCodeISO3166_1",
+                "usedLangCodeISO639_1",
+                "mandatoryLangCodeISO639_1",
+                "uniqueIdentifier",
+                "beginPerformanceDate",
+                "endPerformanceDate",
+                "performanceLocation"
+            ],
+            "properties": {
+                "countryCodeISO3166_1": {"type": "string"},
+                "usedLangCodeISO639_1": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 1
+                },
+                "mandatoryLangCodeISO639_1": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 1
+                },
+                "uniqueIdentifier": {"type": "string"},
+                "identifications": {"$ref": "#/definitions/identificationListType"},
+                "receiptDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "beginPerformanceDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "endPerformanceDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "performanceLocation": {"$ref": "#/definitions/performanceLocationType"},
+                "previousReport": {"$ref": "#/definitions/hashType"}
+            }
+        },
+        "equipmentClassType": {
+            "type": "object",
+            "required": [
+                "reference",
+                "classID"
+            ],
+            "properties": {
+                "reference": {"type": "string"},
+                "classID": {"type": "string"},
+                "id": {"type": "string"}
+            }
+        },
+        "positionCoordinatesType": {
+            "type": "object",
+            "required": [
+                "positionCoordinateSystem",
+                "positionCoordinate1",
+                "positionCoordinate2"
+            ],
+            "properties": {
+                "positionCoordinateSystem": {"type": "string"},
+                "reference": {"type": "string"},
+                "declaration": {"$ref": "#/definitions/richContentType"},
+                "positionCoordinate1": {"$ref": "./SI_Format.json#/definitions/realQuantityType"},
+                "positionCoordinate2": {"$ref": "./SI_Format.json#/definitions/realQuantityType"},
+                "positionCoordinate3": {"$ref": "./SI_Format.json#/definitions/realQuantityType"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "locationType": {
+            "type": "object",
+            "required": ["cityOrcountryCodeOrpostCode"],
+            "properties": {
+                "cityOrcountryCodeOrpostCode": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "state": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "positionCoordinates": {"$ref": "#/definitions/positionCoordinatesType"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "city": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "countryCode": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "street": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "streetNo": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "postCode": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "postOfficeBox": {"type": "string"}
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "further": {"$ref": "#/definitions/richContentType"}
+                                }
+                            }
+                        ]
+                    },
+                    "minItems": 1
+                }
+            }
+        },
+        "contactType": {
+            "type": "object",
+            "required": [
+                "name",
+                "eMail",
+                "location"
+            ],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "eMail": {"type": "string"},
+                "phone": {"type": "string"},
+                "fax": {"type": "string"},
+                "location": {"$ref": "#/definitions/locationType"},
+                "descriptionData": {"$ref": "#/definitions/byteDataType"},
+                "id": {"type": "string"}
+            }
+        },
+        "contactNotStrictType": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "eMail": {"type": "string"},
+                "phone": {"type": "string"},
+                "fax": {"type": "string"},
+                "location": {"$ref": "#/definitions/locationType"},
+                "descriptionData": {"$ref": "#/definitions/byteDataType"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "itemType": {
+            "type": "object",
+            "required": [
+                "name",
+                "manufacturer",
+                "identifications"
+            ],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "equipmentClass": {"$ref": "#/definitions/equipmentClassType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "installedSoftwares": {"$ref": "#/definitions/softwareListType"},
+                "manufacturer": {"$ref": "#/definitions/contactNotStrictType"},
+                "model": {"type": "string"},
+                "identifications": {"$ref": "#/definitions/identificationListType"},
+                "id": {"type": "string"}
+            }
+        },
+        "itemListType": {
+            "type": "object",
+            "required": ["item"],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "equipmentClass": {"$ref": "#/definitions/equipmentClassType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "owner": {"$ref": "#/definitions/contactType"},
+                "identifications": {"$ref": "#/definitions/identificationListType"},
+                "item": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/itemType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "calibrationLaboratoryType": {
+            "type": "object",
+            "required": ["contact"],
+            "properties": {
+                "calibrationLaboratoryCode": {"type": "string"},
+                "contact": {"$ref": "#/definitions/contactType"}
+            }
+        },
+        "respPersonType": {
+            "type": "object",
+            "required": ["person"],
+            "properties": {
+                "person": {"$ref": "#/definitions/contactNotStrictType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "role": {"type": "string"},
+                "mainSigner": {"type": "boolean"},
+                "cryptElectronicSeal": {"type": "boolean"},
+                "cryptElectronicSignature": {"type": "boolean"},
+                "cryptElectronicTimeStamp": {"type": "boolean"},
+                "id": {"type": "string"}
+            }
+        },
+        "respPersonListType": {
+            "type": "object",
+            "required": ["respPerson"],
+            "properties": {
+                "respPerson": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/respPersonType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "relativeUncertaintyType": {
+            "type": "object",
+            "required": [
+                "relativeUncertaintyXmlList",
+                "relativeUncertaintySingle"
+            ],
+            "properties": {
+                "relativeUncertaintyXmlList": {"$ref": "./SI_Format.json#/definitions/realListXMLListType"},
+                "relativeUncertaintySingle": {"$ref": "./SI_Format.json#/definitions/realQuantityType"}
+            }
+        },
+        "usedMethodType": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "norm": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 0
+                },
+                "reference": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 0
+                },
+                "id": {"type": "string"},
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "usedMethodListType": {
+            "type": "object",
+            "required": ["usedMethod"],
+            "properties": {
+                "usedMethod": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/usedMethodType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "measuringEquipmentQuantityType": {
+            "type": "object",
+            "required": [
+                "noQuantity",
+                "real",
+                "hybrid",
+                "complex",
+                "constant",
+                "realListXMLList"
+            ],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "noQuantity": {"$ref": "#/definitions/richContentType"},
+                "real": {"$ref": "./SI_Format.json#/definitions/realQuantityType"},
+                "hybrid": {"$ref": "./SI_Format.json#/definitions/hybridType"},
+                "complex": {"$ref": "./SI_Format.json#/definitions/complexQuantityType"},
+                "constant": {"$ref": "./SI_Format.json#/definitions/constantQuantityType"},
+                "realListXMLList": {"$ref": "./SI_Format.json#/definitions/realListXMLListType"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "measuringEquipmentQuantityListType": {
+            "type": "object",
+            "required": ["measuringEquipmentQuantity"],
+            "properties": {
+                "measuringEquipmentQuantity": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/measuringEquipmentQuantityType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "measuringEquipmentType": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "equipmentClass": {"$ref": "#/definitions/equipmentClassType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "certificate": {"$ref": "#/definitions/hashType"},
+                "manufacturer": {"$ref": "#/definitions/contactNotStrictType"},
+                "model": {"type": "string"},
+                "identifications": {"$ref": "#/definitions/identificationListType"},
+                "measuringEquipmentQuantities": {"$ref": "#/definitions/measuringEquipmentQuantityListType"},
+                "id": {"type": "string"},
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "measuringEquipmentListType": {
+            "type": "object",
+            "required": ["measuringEquipment"],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "equipmentClass": {"$ref": "#/definitions/equipmentClassType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "owner": {"$ref": "#/definitions/contactType"},
+                "identifications": {"$ref": "#/definitions/identificationListType"},
+                "measuringEquipment": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/measuringEquipmentType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "conditionType": {
+            "type": "object",
+            "required": [
+                "name",
+                "data"
+            ],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "status": {
+                    "allOf": [
+                        {"type": "string"},
+                        {
+                            "enum": [
+                                "beforeAdjustment",
+                                "afterAdjustment",
+                                "beforeRepair",
+                                "afterRepair"
+                            ]
+                        }
+                    ]
+                },
+                "certificate": {"$ref": "#/definitions/hashType"},
+                "data": {"$ref": "#/definitions/dataType"},
+                "id": {"type": "string"},
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "influenceConditionListType": {
+            "type": "object",
+            "required": ["influenceCondition"],
+            "properties": {
+                "influenceCondition": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/conditionType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "measurementMetaDataListType": {
+            "type": "object",
+            "required": ["metaData"],
+            "properties": {
+                "metaData": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/statementMetaDataType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "quantityType": {
+            "type": "object",
+            "required": [
+                "noQuantity",
+                "real",
+                "list",
+                "hybrid",
+                "complex",
+                "constant",
+                "realListXMLList"
+            ],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "noQuantity": {"$ref": "#/definitions/richContentType"},
+                "real": {"$ref": "./SI_Format.json#/definitions/realQuantityType"},
+                "list": {"$ref": "./SI_Format.json#/definitions/SIlistType"},
+                "hybrid": {"$ref": "./SI_Format.json#/definitions/hybridType"},
+                "complex": {"$ref": "./SI_Format.json#/definitions/complexQuantityType"},
+                "constant": {"$ref": "./SI_Format.json#/definitions/constantQuantityType"},
+                "realListXMLList": {"$ref": "./SI_Format.json#/definitions/realListXMLListType"},
+                "relativeUncertainty": {"$ref": "#/definitions/relativeUncertaintyType"},
+                "usedMethods": {"$ref": "#/definitions/usedMethodListType"},
+                "usedSoftware": {"$ref": "#/definitions/softwareListType"},
+                "measuringEquipments": {"$ref": "#/definitions/measuringEquipmentListType"},
+                "influenceConditions": {"$ref": "#/definitions/influenceConditionListType"},
+                "measurementMetaData": {"$ref": "#/definitions/measurementMetaDataListType"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "listType": {
+            "type": "object",
+            "required": [
+                "list",
+                "quantity"
+            ],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "dateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "dateTimeXMLList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "list": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/listType"},
+                    "minItems": 1
+                },
+                "quantity": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/quantityType"},
+                    "minItems": 1
+                },
+                "usedMethods": {"$ref": "#/definitions/usedMethodListType"},
+                "usedSoftware": {"$ref": "#/definitions/softwareListType"},
+                "measuringEquipments": {"$ref": "#/definitions/measuringEquipmentListType"},
+                "influenceConditions": {"$ref": "#/definitions/influenceConditionListType"},
+                "measurementMetaData": {"$ref": "#/definitions/measurementMetaDataListType"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "dataType": {
+            "type": "object",
+            "required": ["textOrformulaOrbyteData"],
+            "properties": {
+                "textOrformulaOrbyteData": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {"$ref": "#/definitions/quantityType"},
+                            {"$ref": "#/definitions/richContentType"},
+                            {"$ref": "#/definitions/formulaType"},
+                            {"$ref": "#/definitions/byteDataType"},
+                            {"$ref": "#/definitions/xmlType"},
+                            {"$ref": "#/definitions/listType"}
+                        ]
+                    },
+                    "minItems": 1
+                },
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "statementMetaDataType": {
+            "type": "object",
+            "required": [
+                "conformity",
+                "conformityXMLList"
+            ],
+            "properties": {
+                "countryCodeISO3166_1": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 0
+                },
+                "convention": {"type": "string"},
+                "traceable": {"type": "boolean"},
+                "norm": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 0
+                },
+                "reference": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 0
+                },
+                "declaration": {"$ref": "#/definitions/richContentType"},
+                "valid": {"type": "boolean"},
+                "date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "period": {"type": "string"},
+                "respAuthority": {"$ref": "#/definitions/contactType"},
+                "conformity": {"$ref": "#/definitions/stringConformityStatementStatusType"},
+                "conformityXMLList": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/stringConformityStatementStatusType"}
+                },
+                "data": {"$ref": "#/definitions/dataType"},
+                "nonSIDefinition": {"type": "string"},
+                "nonSIUnit": {"type": "string"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "statementListType": {
+            "type": "object",
+            "required": ["statement"],
+            "properties": {
+                "statement": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/statementMetaDataType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "administrativeDataType": {
+            "type": "object",
+            "required": [
+                "dccSoftware",
+                "coreData",
+                "items",
+                "calibrationLaboratory",
+                "respPersons",
+                "customer"
+            ],
+            "properties": {
+                "dccSoftware": {"$ref": "#/definitions/softwareListType"},
+                "coreData": {"$ref": "#/definitions/coreDataType"},
+                "items": {"$ref": "#/definitions/itemListType"},
+                "calibrationLaboratory": {"$ref": "#/definitions/calibrationLaboratoryType"},
+                "respPersons": {"$ref": "#/definitions/respPersonListType"},
+                "customer": {"$ref": "#/definitions/contactType"},
+                "statements": {"$ref": "#/definitions/statementListType"}
+            }
+        },
+        "resultType": {
+            "type": "object",
+            "required": [
+                "name",
+                "data"
+            ],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "data": {"$ref": "#/definitions/dataType"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "resultListType": {
+            "type": "object",
+            "required": ["result"],
+            "properties": {
+                "result": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/resultType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "measurementResultType": {
+            "type": "object",
+            "required": [
+                "name",
+                "results"
+            ],
+            "properties": {
+                "name": {"$ref": "#/definitions/textType"},
+                "description": {"$ref": "#/definitions/richContentType"},
+                "usedMethods": {"$ref": "#/definitions/usedMethodListType"},
+                "usedSoftware": {"$ref": "#/definitions/softwareListType"},
+                "measuringEquipments": {"$ref": "#/definitions/measuringEquipmentListType"},
+                "influenceConditions": {"$ref": "#/definitions/influenceConditionListType"},
+                "results": {"$ref": "#/definitions/resultListType"},
+                "measurementMetaData": {"$ref": "#/definitions/measurementMetaDataListType"},
+                "id": {"type": "string"},
+                "refId": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "measurementResultListType": {
+            "type": "object",
+            "required": ["measurementResult"],
+            "properties": {
+                "measurementResult": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/measurementResultType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "digitalCalibrationCertificateType.comment": {
+            "type": "object",
+            "properties": {
+                "Any": {
+                    "type": "array",
+                    "items": {"type": "object"},
+                    "minItems": 0
+                }
+            }
+        },
+        "digitalCalibrationCertificateType": {
+            "type": "object",
+            "required": [
+                "administrativeData",
+                "measurementResults",
+                "schemaVersion"
+            ],
+            "properties": {
+                "administrativeData": {"$ref": "#/definitions/administrativeDataType"},
+                "measurementResults": {"$ref": "#/definitions/measurementResultListType"},
+                "comment": {"$ref": "#/definitions/digitalCalibrationCertificateType.comment"},
+                "document": {"$ref": "#/definitions/byteDataType"},
+                "schemaVersion": {"type": "string"}
+            }
+        },
+        "stringPerformanceLocationType": {
+            "allOf": [
+                {"type": "string"},
+                {
+                    "enum": [
+                        "laboratory",
+                        "customer",
+                        "laboratoryBranch",
+                        "customerBranch",
+                        "other"
+                    ]
+                }
+            ]
+        },
+        "stringConformityStatementStatusType": {
+            "allOf": [
+                {"type": "string"},
+                {
+                    "enum": [
+                        "pass",
+                        "fail",
+                        "conditionalPass",
+                        "conditionalFail",
+                        "noPass",
+                        "noFail"
+                    ]
+                }
+            ]
+        }
+    },
+    "allOf": [
+        {
+            "type": "object",
+            "properties": {
+                "digitalCalibrationCertificate": {"$ref": "#/definitions/digitalCalibrationCertificateType"}
+            },
+            "required": ["digitalCalibrationCertificate"]
+        }
+    ]
+}

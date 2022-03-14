@@ -1,32 +1,17 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id":"https://raw.githubusercontent.com/desdotl/schemas/master/dcc_schemas/7_VerifiableDelegationSchema/schema.json",
   "title": "DCC Verifiable Delegation",
-  "description": "Schema of a DCC Verifiable Authorisation",
-  "definitions": {
-    "credentialSubject": {
-            "description": "Defines additional information about the subject that is described by the Verifiable Authorisation",
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Defines the DID of the subject that is described by the Verifiable Attestation",
-                "type": "string",
-                "format": "uri",
-                "default": "did:dcc:0xe88357BF682d965a38CE41d00085C05412d25936",
-                "pattern": "^(did:dcc:0x)([a-zA-Z0-9]{40})$"
-              },
-            "domain":{
-                "description": "Defines the Domain of Delegation (compatible with EIP712-EIP1812)",
-                "type": "string",
-                "format": "uri"
-            }
-          },
-            "required": ["id","domain"]
-          }
-  },
+  "description": "Schema of a DCC Verifiable Delegation",
   "type": "object",
+  "required": ["id","domain"],
   "properties": {
-    "credentialSubject":{"$ref": "#/definitions/credentialSubject"}
+    "id": {
+      "description": "Defines the DID of the subject that is described by the Verifiable Attestation",
+      "type": "string",
+      "format": "uri",
+      "default": "did:dcc:0xe88357BF682d965a38CE41d00085C05412d25936",
+      "pattern": "^(did:dcc:0x)([a-zA-Z0-9]{40})$"
+    }
   }
-  }
+}
  

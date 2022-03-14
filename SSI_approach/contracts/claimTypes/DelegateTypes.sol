@@ -18,13 +18,27 @@ contract DelegateTypes {
     bytes32 s;
   }
 
+   struct DelegatedVerifiableCredential {
+        VerifiableDelegate issuer;
+        address subject;
+        uint256 validFrom;
+        uint256 validTo;
+        bytes32 data;
+    }
+
+    
+
   bytes32 constant DELEGATE_TYPEHASH = keccak256(
-    "Delegate(address issuer, address subject, bytes32 allowed_type_hash, uint256 validFrom, uint256 validTo)"
+    "Delegate(address issuer, address subject, uint256 validFrom, uint256 validTo)"
   );
 
   bytes32 constant VERIFIABLE_DELEGATE_TYPEHASH = keccak256(
     abi.encodePacked("VerifiableDelegate(Delegate delegate, uint8 v, bytes32 r, bytes32 s)", DELEGATE_TYPEHASH)
   );
+
+  bytes32 constant internal DELEGATED_VERIFIABLE_CREDENTIAL_TYPEHASH = keccak256(
+        abi.encodePacked("VerifiableCredential(VerifiableDelegate issuer,address subject,uint256 validFrom,uint256 validTo,bytes32 data)",VERIFIABLE_DELEGATE_TYPEHASH)
+    );
 
   function hash(Delegate memory delegate) public pure returns (bytes32) {
     return keccak256(
@@ -32,7 +46,6 @@ contract DelegateTypes {
         DELEGATE_TYPEHASH,
         delegate.issuer,
         delegate.subject,
-        delegate.allowed_type_hash,
         delegate.validFrom,
         delegate.validTo
       )
@@ -50,4 +63,19 @@ contract DelegateTypes {
       )
     );
   }
+
+  function hash(DelegatedVerifiableCredential memory vc) internal pure returns (bytes32) {
+        return keccak256(
+            abi.encode(
+                DELEGATED_VERIFIABLE_CREDENTIAL_TYPEHASH,
+                hash(vc.issuer),
+                vc.subject,
+                vc.validFrom,
+                vc.validTo,
+                vc.data
+            )
+        );
+    }
+
 }
+

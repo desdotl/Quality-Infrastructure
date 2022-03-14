@@ -65,7 +65,11 @@ contract AbstractClaimsVerifier {
         return (_validFrom <= block.timestamp) && (block.timestamp < _validTo);
     }
 
-    function _verifySigner(bytes32 _digest, address _signer, uint8 _v, bytes32 _r, bytes32 _s) internal view returns (bool) {
+    function _validPeriod(bytes32 _credentialHash) internal view returns (bool) {
+        return registry.validPeriod(_credentialHash);
+    }
+
+    function _verifySigner(bytes32 _digest, address _signer, uint8 _v, bytes32 _r, bytes32 _s) internal pure returns (bool) {
         return (_signer == ecrecover(_digest, _v, _r, _s));
     }
 
@@ -77,8 +81,12 @@ contract AbstractClaimsVerifier {
         return registry.exist(_credentialHash);
     }
 
-    function _verifyRevoked(bytes32 _credentialHash) internal view returns (bool){
-        return registry.status(_credentialHash);
+    function _Revoked(bytes32 _credentialHash) internal view returns (bool){
+        return !registry.status(_credentialHash);
     }
+
+    function _isActiveCredential(bytes32 _credentialHash) internal view returns (bool) { 
+            return (_exist(_credentialHash) && !_Revoked(_credentialHash) && _validPeriod(_credentialHash));
+        }
 
 }

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:dsoa="http://metrologyinfrastructure/lib/dsoa" xmlns:si="https://ptb.de/si"
+    xmlns:dcc="https://ptb.de/dcc" targetNamespace="http://metrologyinfrastructure/lib/dsoa"
+    elementFormDefault="qualified">
+    <xs:import namespace="https://ptb.de/dcc" schemaLocation="dcc.xsd"/>
+    <xs:import namespace="https://ptb.de/si" schemaLocation="SI_Format.xsd"/>
+    <xs:complexType name="rangeType" abstract="true">
+
+        <xs:sequence>
+            <xs:element name="unitPrefix" type="xs:string" minOccurs="0"/>
+            <xs:element name="Start" minOccurs="1" type="si:decimalType"> </xs:element>
+            <xs:element name="End" type="si:decimalType"> </xs:element>
+            <xs:element minOccurs="0" name="unit" type="si:unitType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="coreDataType">
+        <xs:annotation>
+            <xs:documentation>
+                Important metadata for the DSOA
+                containing the global unique identifier and other identifications.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="countryCodeISO3166_1" type="dcc:stringISO3166Type"/>
+            <xs:element name="usedLangCodeISO639_1" type="dcc:stringISO639Type"
+                maxOccurs="unbounded"/>
+            <xs:element name="mandatoryLangCodeISO639_1" type="dcc:stringISO639Type"
+                maxOccurs="unbounded"/>
+            <xs:element name="uniqueIdentifier" type="xs:string"/>
+            <xs:element name="identifications" type="dcc:identificationListType" minOccurs="0"/>
+            <xs:element name="receiptDate" type="xs:date" minOccurs="0"/>
+            <xs:element name="IssuanceDate" type="xs:date"/>
+            <xs:element name="ExpirationDate" type="xs:date"/>
+            <xs:element name="previousReport" type="dcc:hashType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="administrativeDataType">
+        <xs:annotation>
+            <xs:documentation>
+                The element administrativeData contains all essential administrative information about the accreditation.
+                The entries in this area are basically the same and regulated in all DSOA.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="dccSoftware" type="dcc:softwareListType"/>
+            <xs:element name="coreData" type="dsoa:coreDataType"/>
+            <xs:element name="AccreditationBody" type="dcc:contactType" minOccurs="0"/>
+            <xs:element name="calibrationLaboratory" type="dcc:calibrationLaboratoryType"/>
+            <xs:element name="statements" type="dcc:statementListType" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType abstract="false" name="SoAReacordType">
+        <xs:annotation>
+            <xs:documentation>DSOA records are organized in Vocabulary with the following key: Metrological Area, Sector, Category and so on. The values are the list of the CMCs records.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="areaCode" type="xs:string"/>
+            <xs:element name="unit" type="si:unitType"/>
+            <xs:element name="areaName" type="xs:string"/>
+            <xs:element maxOccurs="unbounded" name="sectors" type="dsoa:SoARecordSectorType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="SoARecordSectorType" abstract="false">
+        <xs:sequence>
+            <xs:element name="sectorCode" type="xs:string"/>
+            <xs:element name="sectorName" type="xs:string"/>
+            <xs:element name="category" type="dsoa:categoryType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="categoryType">
+        <xs:sequence>
+            <xs:element name="categoryCode" type="xs:string"/>
+            <xs:element name="categoryName" type="xs:string"/>
+            <xs:choice>
+                <xs:element name="subcategory" type="dsoa:categoryType" maxOccurs="unbounded"/>
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" name="CMCRecords" type="dsoa:CMCRecordType"/>
+                </xs:sequence>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CMCUncertaintyType">
+        <xs:choice>
+            <xs:element name="value" type="si:decimalType"/>
+            <xs:element name="range" type="dsoa:rangeType"/>
+            <xs:element name="formula" type="dcc:formulaType"/>
+            <xs:element ref="si:covarianceMatrix"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="CMCRangedRecordType">
+        <xs:complexContent>
+            <xs:extension base="dsoa:rangeType">
+                <xs:sequence>
+                    <xs:element name="parameterRange" type="dsoa:CMCbaseRecordType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CMCbaseRecordType">
+        <xs:complexContent>
+            <xs:extension base="dsoa:rangeType">
+                <xs:sequence>
+                    <xs:element name="CMCUncertainity" type="dsoa:CMCUncertaintyType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CMCRecordType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="CMCRangedRecord" type="dsoa:CMCRangedRecordType"/>
+                <xs:element name="CMCRecord" type="dsoa:CMCbaseRecordType"/>
+            </xs:choice>
+            <xs:element name="Statement">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Comment" type="dcc:textType"/>
+                        <xs:element name="InflenceCondition" type="dcc:influenceConditionListType"/>
+                        <xs:element name="Equipments" type="dcc:measuringEquipmentListType"/>
+                        <xs:element name="Methods" type="dcc:usedMethodListType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="digitalAccreditationCertificateType">
+        <xs:annotation>
+            <xs:documentation>The Digitale Accreditation Certificate</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="AdministrativeData" type="dsoa:administrativeDataType"/>
+            <xs:element name="SoARecoeds">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="Areas" type="dsoa:SoAReacordType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="schemaVersion" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="1\.0\.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,308 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "rangeType": {
+            "type": "object",
+            "required": [
+                "Start",
+                "End"
+            ],
+            "properties": {
+                "unitPrefix": {"type": "string"},
+                "Start": {"type": "number"},
+                "End": {"type": "number"},
+                "unit": {"type": "string"}
+            }
+        },
+        "SoARecordSectorType": {
+            "type": "object",
+            "required": [
+                "sectorCode",
+                "sectorName",
+                "category"
+            ],
+            "properties": {
+                "sectorCode": {"type": "string"},
+                "sectorName": {"type": "string"},
+                "category": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/categoryType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "SoAReacordType": {
+            "type": "object",
+            "required": [
+                "areaCode",
+                "unit",
+                "areaName",
+                "sectors"
+            ],
+            "properties": {
+                "areaCode": {"type": "string"},
+                "unit": {"type": "string"},
+                "areaName": {"type": "string"},
+                "sectors": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/SoARecordSectorType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "digitalAccreditationCertificateType.SoARecoeds": {
+            "type": "object",
+            "required": ["Areas"],
+            "properties": {
+                "Areas": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/SoAReacordType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "digitalAccreditationCertificateType": {
+            "type": "object",
+            "required": [
+                "AdministrativeData",
+                "SoARecoeds",
+                "schemaVersion"
+            ],
+            "properties": {
+                "AdministrativeData": {"$ref": "#/definitions/administrativeDataType"},
+                "SoARecoeds": {"$ref": "#/definitions/digitalAccreditationCertificateType.SoARecoeds"},
+                "schemaVersion": {"type": "string"}
+            }
+        },
+        "CMCUncertaintyType": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {"type": "number"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "range": {"$ref": "#/definitions/rangeType"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "formula": {"$ref": "./dcc.json#/definitions/formulaType"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "covarianceMatrix": {"$ref": "./SI_Format.json#/definitions/covarianceMatrixType"}
+                    }
+                }
+            ]
+        },
+        "CMCbaseRecordType": {
+            "required": ["CMCUncertainity"],
+            "allOf": [
+                {"$ref": "#/definitions/rangeType"},
+                {
+                    "type": "object",
+                    "properties": {
+                        "CMCUncertainity": {"$ref": "#/definitions/CMCUncertaintyType"}
+                    }
+                }
+            ]
+        },
+        "CMCRangedRecordType": {
+            "required": ["parameterRange"],
+            "allOf": [
+                {"$ref": "#/definitions/rangeType"},
+                {
+                    "type": "object",
+                    "properties": {
+                        "parameterRange": {"$ref": "#/definitions/CMCbaseRecordType"}
+                    }
+                }
+            ]
+        },
+        "measuringEquipmentType": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "name": {"$ref": "./dcc.json#/definitions/textType"},
+                "equipmentClass": {"$ref": "./dcc.json#/definitions/equipmentClassType"},
+                "description": {"$ref": "./dcc.json#/definitions/richContentType"},
+                "certificate": {"$ref": "./dcc.json#/definitions/hashType"},
+                "manufacturer": {"$ref": "./dcc.json#/definitions/contactNotStrictType"},
+                "model": {"type": "string"},
+                "identifications": {"$ref": "./dcc.json#/definitions/identificationListType"},
+                "id": {"type": "string"},
+                "refType": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        },
+        "measuringEquipmentListType": {
+            "type": "object",
+            "required": ["measuringEquipment"],
+            "properties": {
+                "name": {"$ref": "./dcc.json#/definitions/textType"},
+                "equipmentClass": {"$ref": "./dcc.json#/definitions/equipmentClassType"},
+                "description": {"$ref": "./dcc.json#/definitions/richContentType"},
+                "owner": {"$ref": "./dcc.json#/definitions/contactType"},
+                "identifications": {"$ref": "./dcc.json#/definitions/identificationListType"},
+                "measuringEquipment": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/measuringEquipmentType"},
+                    "minItems": 1
+                }
+            }
+        },
+        "CMCRecordType.Statement": {
+            "type": "object",
+            "required": [
+                "Comment",
+                "InflenceCondition",
+                "Equipments",
+                "Methods"
+            ],
+            "properties": {
+                "Comment": {"$ref": "./dcc.json#/definitions/textType"},
+                "InflenceCondition": {"$ref": "./dcc.json#/definitions/influenceConditionListType"},
+                "Equipments": {"$ref": "#/definitions/measuringEquipmentListType"},
+                "Methods": {"$ref": "./dcc.json#/definitions/usedMethodListType"}
+            }
+        },
+        "CMCRecordType": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "CMCRecord",
+                        "Statement"
+                    ],
+                    "properties": {
+                        "CMCRecord": {"$ref": "#/definitions/CMCbaseRecordType"},
+                        "Statement": {"$ref": "#/definitions/CMCRecordType.Statement"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "CMCRangedRecord",
+                        "Statement"
+                    ],
+                    "properties": {
+                        "CMCRangedRecord": {"$ref": "#/definitions/CMCRangedRecordType"},
+                        "Statement": {"$ref": "#/definitions/CMCRecordType.Statement"}
+                    }
+                }
+            ]
+        },
+        "categoryType": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "categoryCode",
+                        "categoryName",
+                        "subcategory"
+                    ],
+                    "properties": {
+                        "categoryCode": {"type": "string"},
+                        "categoryName": {"type": "string"},
+                        "subcategory": {
+                            "type": "array",
+                            "items": {"$ref": "#/definitions/categoryType"},
+                            "minItems": 1,
+                            "maxItems": 1
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "categoryCode",
+                        "categoryName",
+                        "CMCRecords"
+                    ],
+                    "properties": {
+                        "categoryCode": {"type": "string"},
+                        "categoryName": {"type": "string"},
+                        "CMCRecords": {
+                            "type": "array",
+                            "items": {"$ref": "#/definitions/CMCRecordType"},
+                            "minItems": 1
+                        }
+                    }
+                }
+            ]
+        },
+        "coreDataType": {
+            "type": "object",
+            "required": [
+                "countryCodeISO3166_1",
+                "usedLangCodeISO639_1",
+                "mandatoryLangCodeISO639_1",
+                "uniqueIdentifier",
+                "IssuanceDate",
+                "ExpirationDate"
+            ],
+            "properties": {
+                "countryCodeISO3166_1": {"type": "string"},
+                "usedLangCodeISO639_1": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 1
+                },
+                "mandatoryLangCodeISO639_1": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 1
+                },
+                "uniqueIdentifier": {"type": "string"},
+                "identifications": {"$ref": "./dcc.json#/definitions/identificationListType"},
+                "receiptDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "IssuanceDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "ExpirationDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "previousReport": {"$ref": "./dcc.json#/definitions/hashType"}
+            }
+        },
+        "administrativeDataType": {
+            "type": "object",
+            "required": [
+                "dccSoftware",
+                "coreData",
+                "calibrationLaboratory",
+                "AccreditationBody"
+            ],
+            "properties": {
+                "dccSoftware": {"$ref": "./dcc.json#/definitions/softwareListType"},
+                "coreData": {"$ref": "#/definitions/coreDataType"},
+                "AccreditationBody": {"$ref": "./dcc.json#/definitions/contactType"},
+                "calibrationLaboratory": {"$ref": "./dcc.json#/definitions/calibrationLaboratoryType"},
+                "statements": {"$ref": "./dcc.json#/definitions/statementListType"}
+            }
+        }
+    },
+    "allOf": [
+        {
+            "type": "object",
+            "properties": {
+                "digitalAccreditationCertificate": {"$ref": "#/definitions/digitalAccreditationCertificateType"}
+            },
+            "required": ["digitalAccreditationCertificate"]
+        }
+    ]
+}

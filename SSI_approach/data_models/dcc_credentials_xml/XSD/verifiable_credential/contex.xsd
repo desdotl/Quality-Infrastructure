@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema elementFormDefault="qualified" version="0.10.0"
+    targetNamespace="http://metrologyinfrastructure/model/credentials/context"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:mcvc="http://metrologyinfrastructure/model/credentials/context"
+    xmlns:dcc="https://ptb.de/dcc">
+
+    <xs:import namespace="https://ptb.de/dcc" schemaLocation="../lib/dcc.xsd"/>
+    
+    <!--Type text-->
+    <xs:simpleType name="TextContentTypeCodeEnumType">
+        <xs:annotation>
+            <xs:documentation/>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="text/html"/>
+            <xs:enumeration value="text/plain"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!--Languages-->
+
+    <xs:simpleType name="LanguageCharCodeEnumType">
+        <xs:annotation>
+            <xs:documentation/>
+        </xs:annotation>
+        <xs:restriction base="xs:language">
+            <xs:enumeration value="bg"/>
+            <xs:enumeration value="cs"/>
+            <xs:enumeration value="da"/>
+            <xs:enumeration value="de"/>
+            <xs:enumeration value="el"/>
+            <xs:enumeration value="en"/>
+            <xs:enumeration value="es"/>
+            <xs:enumeration value="et"/>
+            <xs:enumeration value="fi"/>
+            <xs:enumeration value="fr"/>
+            <xs:enumeration value="ga"/>
+            <xs:enumeration value="hr"/>
+            <xs:enumeration value="hu"/>
+            <xs:enumeration value="is"/>
+            <xs:enumeration value="it"/>
+            <xs:enumeration value="lt"/>
+            <xs:enumeration value="lv"/>
+            <xs:enumeration value="mk"/>
+            <xs:enumeration value="mt"/>
+            <xs:enumeration value="nl"/>
+            <xs:enumeration value="no"/>
+            <xs:enumeration value="pl"/>
+            <xs:enumeration value="pt"/>
+            <xs:enumeration value="ro"/>
+            <xs:enumeration value="sk"/>
+            <xs:enumeration value="sl"/>
+            <xs:enumeration value="sr"/>
+            <xs:enumeration value="sv"/>
+            <xs:enumeration value="tr"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!--Text-->
+    <xs:simpleType name="DocumentURLType">
+        <xs:restriction base="xs:anyURI">
+            <xs:pattern value="http://.*"/>
+            <xs:pattern value="https://.*"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="MailToUriType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">mailto: URI scheme conform to RFC 2368.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:anyURI">
+            <xs:pattern value="mailto:.*"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="IdType">
+        <xs:annotation>
+            <xs:documentation>A portable identifier of an entity (i.e. a urn in the uuid
+                namespace).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:anyURI"/>
+    </xs:simpleType>
+    <xs:complexType name="AddressType">
+        <xs:annotation>
+            <xs:documentation>An adress. Properties specifying an entity’s physical
+                location.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="id" type="xs:anyURI"/>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="identifier"
+                type="mcvc:IdentifierType">
+                <xs:annotation>
+                    <xs:documentation>An adress identifier.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="fullAddress"
+                type="dcc:locationType">
+                <xs:annotation>
+                    <xs:documentation>The complete address with or without formatting. Use of this
+                        property is recommended as it will not suffer any misunderstandings that
+                        might arise through the breaking up of an address into its component parts.
+                        Maximum one value per language is allowed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="PhoneType">
+        <xs:annotation>
+            <xs:documentation>A phone number.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="phoneNumber"
+                type="xs:normalizedString">
+                <xs:annotation>
+                    <xs:documentation>The full phone number as a string.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="countryDialing"
+                type="xs:token">
+                <xs:annotation>
+                    <xs:documentation>The country dialling code for a contact number. (e.g. “0032”,
+                        “0034”, etc.)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="areaDialing"
+                type="xs:token">
+                <xs:annotation>
+                    <xs:documentation>The area dialling code for a contact number.(e.g. “2”, “71,
+                        “93”, etc.)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="dialNumber"
+                type="xs:token">
+                <xs:annotation>
+                    <xs:documentation>The contact number, not including country dialling or area
+                        dialling codes. (e.g. “3445654”, “1234567”, etc.)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MBoxType">
+        <xs:annotation>
+            <xs:documentation>A mailbox (ie. an Internet mailbox)</xs:documentation>
+        </xs:annotation>
+        <xs:sequence/>
+        <xs:attribute name="uri" type="mcvc:MailToUriType" use="required">
+            <xs:annotation>
+                <xs:documentation>The email address. A uri that specifies the e-mail adress using
+                    the 'mailto'-URI scheme. The 'mailto'-URI scheme is used to identify resources
+                    that are reached using Internet mail. In its simplest form, a 'mailto' URI
+                    contains an Internet mail address. (see
+                    https://tools.ietf.org/html/rfc6068)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="AttachmentListType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">List any digital document (PDF, JPEG or PNG format)
+                that an issuer has attached to the Europass document to support/evidence of personal
+                data, learning achievements, work experiences, skills, competences, diplomas, etc.
+            </xs:documentation>
+        </xs:annotation>
+
+    </xs:complexType>
+    <xs:group name="CommonSpecificationElements">
+        <xs:sequence>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="identifier"
+                type="mcvc:IdentifierType">
+                <xs:annotation>
+                    <xs:documentation>An alternative identifier of the
+                        specification.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="title" type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>The title of the specification. Maximum one value per language
+                        is allowed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="description"
+                type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>A free text description of the specification. Maximum one
+                        value per language is allowed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:group>
+
+    <!--Identifier-->
+
+    <xs:complexType name="IdentifierType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">Identifiers are needed to identify and link
+                resources in a unique and persistent way. A resource identifier must be unique
+                and persistent, meaning the identifier will always refer to the same resource and
+                cannot be reused to identify other resources. A resource identifier consists of:
+                - a string identifier, unique and persistent within the scope of the issuing system.
+                - a unique identifier of the publishing system that issued the string identifier for
+                that particular resource. The combination of both, the string identifier and the
+                unique identifier of the issuing system, makes the resource identifier globally
+                unique. The IdentifierType is used to describe a full (alternative)
+                identifier of an entity or resource. - The text content of the
+                IdentifierType-element contains the character string to identify and distinguish
+                uniquely the resource within the scope of the identification scheme - The
+                schemeID attribute is used to specify the identifier scheme. The identifier schema
+                (or identifier register) refers to the agent/system that issued the identifier, it
+                specifies where the identifier originates from. It is the namespace in which
+                the identifier is unique and persistent. The other attributes of the
+                IdentifierType-element provide supplementary information such as the identifier of
+                the used code list and the agency that maintains this list
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:normalizedString">
+                <xs:attribute name="schemeID" type="xs:normalizedString" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>Identification of the identifier scheme or the identifier
+                            register (~ the managing/originating system of the identifier). This can
+                            be seen as the namespace in which the assigned identifier is
+                            unique.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="schemeName" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>Name of the identifier scheme.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="schemeAgencyName" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>The name of the agent that manages the identifier scheme.
+                            The agent that issued the identifier.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="issuedDate" type="xs:dateTime">
+                    <xs:annotation>
+                        <xs:documentation>The date on which the identifier was
+                            issued.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="type" type="xs:token" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>A code used to classify the type of
+                            identifier
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="spatialID" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>The related country or region code (jurisdiction) of a
+                            legal identifier. A legal identifier is a formally issued identifier by
+                            a given authorithy within a given jurisdiction. The identifier has a
+                            spatial context.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <!--LegalIdentifierType-->
+    <xs:complexType name="LegalIdentifierType">
+        <xs:simpleContent>
+            <xs:restriction base="mcvc:IdentifierType">
+                <xs:attribute name="spatialID" type="xs:string" use="required"/>
+            </xs:restriction>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <!--IdReferenceType-->
+
+    <xs:complexType name="IdReferenceType">
+        <xs:annotation>
+            <xs:documentation>A link or reference to another entity record in the credential
+                document.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="idref" type="xs:anyURI" use="required">
+            <xs:annotation>
+                <xs:documentation>The id of the referenced entity (record).</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="CodeType">
+        <xs:complexContent>
+            <xs:extension base="mcvc:AbstractCodeType">
+                <xs:attribute name="targetFrameworkUrl" type="mcvc:DocumentURLType" use="required">
+                    <xs:annotation>
+                        <xs:documentation>The URL of the framework or system used to describe the assoicated
+                            object..
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AbstractCodeType" abstract="true">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">A term from a controlled vocabulary.
+                A code is a character string of letters, numbers, special characters (except escape
+                sequences), and symbols. It represents a definitive value, a method,
+                or a property description in an abbreviated or language-independent form that is
+                part of a finite list of allowed values. The CodeType is used for
+                all elements that are used to enable a common coded value representation. Typical
+                example of code types are: Country Code and Language Code. The
+                CodeType should be used in case of a finite list of allowed values. The
+                IdentifierType should be used in case of an infinite set of objects.
+                This CodeType is a generic data type which is also used to represent association
+                objects.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="1" name="targetName"
+                type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>A name or label of the associated object in the targeted
+                        framework.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0"
+                name="targetDescription" type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>A description of the associated object in the targeted
+                        framework.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0"
+                name="targetFrameworkName" type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>The name of the framework or system used to describe the
+                        associated object.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="uri" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">A URI identifier of the code. For URI identifier of
+                    an associated object, USE targetID attribute instead of this.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="targetNotation" type="xs:token" use="optional">
+            <xs:annotation>
+                <xs:documentation>A notation or code of the associated object in the targeted
+                    framework.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+
+    <!--Verification Status type Code-->
+
+    <xs:complexType name="ContactPointType">
+        <xs:annotation>
+            <xs:documentation/>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="address"
+                type="mcvc:AddressType">
+                <xs:annotation>
+                    <xs:documentation>A postal address used for contacting the
+                        agent.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="phone"
+                type="mcvc:PhoneType">
+                <xs:annotation>
+                    <xs:documentation>A phone number used for contacting the agent.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="mailBox"
+                type="mcvc:MBoxType">
+                <xs:annotation>
+                    <xs:documentation>An email address used for contacting the agent.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="wallet"
+                type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>The address of an electronic wallet where credentials may be
+                        deposited.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PersonType">
+        <xs:sequence>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="contactPoint"
+                type="mcvc:ContactPointType">
+                <xs:annotation>
+                    <xs:documentation>The contact information of an agent. This property links to
+                        any "channel" through which the agent can be contacted. It is a means of
+                        contacting the agent. It gives the details of how to contact the agent and
+                        is repeatable for each type of contact method.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="nationalId"
+                type="mcvc:IdentifierType">
+                <xs:annotation>
+                    <xs:documentation>The "primary" national identifier of the person.
+                                (mandatory attribute EIDAS, a unique identifier constructed by the
+                                sending Member State in accordance with the technical specifications
+                                for the purposes of cross-border identification and which is as
+                                persistent as possible in time). Not mandatory if a person does not
+                                have a national id.
+                            </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="fullName" type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>The complete name of the person as one string. Maximum
+                                cardinality of one per language.
+                            </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="1" name="givenNames"
+                type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>The given name(s) of the person. The denominator(s)
+                                that identify the person within a family. Maximum cardinality of one
+                                per language.
+                            </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="1" name="familyName"
+                type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>The family name of the person. A name that is usually
+                                shared by members of a family. Maximum cardinality of one per
+                                language.
+                            </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="birthName"
+                type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>The name of the person at birth. Birth names tend to be persistent and for
+                                this reason they are recorded by some public sector information systems. There is no
+                                granularity for birth name - the full name should be recorded in a single field.
+                            </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="patronymicName"
+                type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>Patronymic names are important in some countries. Iceland does not have a
+                                concept of 'family name' in the way that many other European countries do, for example,
+                                Erik Magnusson and Erika Magnusdottir are siblings, both offspring of Mangnus,
+                                irrespective of his patronymic name. In Bulgaria and Russia, patronymic names are in
+                                every day usage, for example, the Sergeyevich in 'Mikhail Sergeyevich Gorbachev.'
+                            </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="dateOfBirth"
+                type="xs:date"/>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="placeOfBirth"
+                type="dcc:listType"/>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="gender" type="mcvc:CodeType">
+                <xs:annotation>
+                    <xs:documentation>Indicates/specifies the gender
+                            </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0"
+                name="citizenshipCountry" type="mcvc:CodeType">
+                <xs:annotation>
+                    <xs:documentation>The country that has conferred citizenship rights on
+                                the person. The Country which has issued Citizenship status to an
+                                individual either by birth or by application process. The
+                                citizenship rights include rights such as the right to vote, to
+                                receive certain protection from the community or the issuance of a
+                                passport. Multiple citizenships are recorded as multiple instances
+                                of the Citizenship relationship. Citizenship is information needed
+                                by many cross-border use cases and is a legal status as opposed to
+                                the more culturally-focussed and less well-defined term
+                                "nationality".
+                            </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="hasLocation"
+                type="dcc:locationType">
+                <xs:annotation>
+                    <xs:documentation>A location related to a Person. (e.g. a person's home or
+                                residence location, a person's work place location, site location of an
+                                organisation,….)
+                            </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="mcvc:IdType" use="required">
+            <xs:annotation>
+                <xs:documentation>A portable identifier of the agent.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="OrganizationType">
+        <xs:annotation>
+            <xs:documentation>A legal organization (e.g. the credential issuer, an awarding body, an
+                academic or training institution,...).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="identifier"
+                type="mcvc:IdentifierType"/>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="type"
+                type="mcvc:CodeType">
+                <xs:annotation>
+                    <xs:documentation>The type of agent (i.e. the ESCO organization
+                        category).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="contactPoint"
+                type="mcvc:ContactPointType">
+                <xs:annotation>
+                    <xs:documentation>The contact information of the organization. This property
+                        links to any "channel" through which the organization can be contacted. It
+                        is a means of contacting the organization. It gives the details of how to
+                        contact the organization and is repeatable for each type of contact
+                        method.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="1" name="registration"
+                type="mcvc:IdentifierType">
+                <xs:annotation>
+                    <xs:documentation>The legal identifier of an organization. The identifier given
+                        to a registered organization by the authority with which it is registered.
+                        The legal status of a registered organization is conferred on it by an
+                        authority within a given jurisdiction. The Legal Identifier is therefore a
+                        fundamental relationship between an organization and the authority with
+                        which it is registered.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="vatIdentifier"
+                type="mcvc:IdentifierType">
+                <xs:annotation>
+                    <xs:documentation>The Value-added Tax ID.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="taxIdentifier"
+                type="mcvc:IdentifierType">
+                <xs:annotation>
+                    <xs:documentation>The Tax/Fiscal ID of the organization.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="1" minOccurs="1" name="prefLabel"
+                type="dcc:textType">
+                <xs:annotation>
+                    <xs:documentation>The primary name of the organization (e.g. legally recognized
+                        name). The name by which to refer to an organisation. In case of a
+                        registered organisation this is the legal name of the organization. Maximum
+                        one value per language is allowed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="1" name="hasLocation"
+                type="dcc:locationType">
+                <xs:annotation>
+                    <xs:documentation>The legally registered site of the organisation. The country
+                        or region and eventually the address.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="hasAccreditation"
+                type="mcvc:IdentifierType">
+                <xs:annotation>
+                    <xs:documentation>The accreditation(s) (i.e the quality assurance or licensing)
+                        of an organization (i.e the issuer of the credential). It MUST refer to an
+                        existing 'accreditation'-record in the
+                        'accreditationReferences'-section.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="hasUnit"
+                type="mcvc:IdentifierType">
+                <xs:annotation>
+                    <xs:documentation>Indicates a unit which is part of this Organization, e.g. a
+                        Department within a larger Organization. It MUST refer to an existing
+                        'organization'-record in the 'agentReferences'-section within the xml
+                        document.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element form="qualified" minOccurs="0" name="unitOf" type="mcvc:IdentifierType">
+                <xs:annotation>
+                    <xs:documentation>Indicates an Organization of which this Unit is a part, e.g. a
+                        Department within a larger Organization. It MUST refer to an existing
+                        'organization'-record in the 'agentReferences'-section within the xml
+                        document.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="mcvc:IdType" use="required">
+            <xs:annotation>
+                <xs:documentation>A portable identifier of the organization (i.e. a urn in the uuid
+                    namespace). It is this identifier that MUST be used to link or refer to this
+                    organization from other places within the credential
+                    document.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+</xs:schema>
