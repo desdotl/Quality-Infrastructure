@@ -3,7 +3,7 @@
 pragma solidity 0.8.0;
 
 import "./lib/ECDSA.sol";
-import "../node_modules/@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import "../../node_modules/@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "./AbstractClaimsVerifier.sol";
 import "./claimTypes/ClaimTypes.sol";
 import "./claimTypes/DelegateTypes.sol";
@@ -15,11 +15,12 @@ contract ClaimsVerifier is AbstractClaimsVerifier, DelegateTypes, AccessControlE
     bytes32 public constant ISSUER_ROLE = keccak256("ISSUER_ROLE");
 
     struct IssuerMeta {
-        bytes32 credentialHash;
-        address verifyngContract;
+       bytes32 IDcredentialHash;
+       bytes32 allwedTypeHash;
     }
 
-    mapping (address => IssuerMeta) issuers;
+    mapping(address=> IssuerMeta) issuers;
+
     mapping (address => bytes32) delegates;
 
     event DelegateRegistered(bytes32 indexed delegtaelHash, address issuer, address delegate, uint iat);
@@ -41,6 +42,8 @@ contract ClaimsVerifier is AbstractClaimsVerifier, DelegateTypes, AccessControlE
     // Delegate 
 
         function registerDeleagte (Delegate memory _delegate, bytes32 _ipfsHash, bytes memory _signature)  public onlyIssuer returns(bool) {
+            require(registry.verifyCredentialSubject(_delegate.allwedTypeHash, address(this), _delegate.version),"CredentialSubject is not valid");
+            require(_delegate.allwedTypeHash==issuers[_delegate.issuer].allwedTypeHash);
             bytes32 _delegateHash = domainHash(_delegate);
             require(!_exist(_delegateHash),"Delegation already registered ");
             require(_validPeriod(_delegate.validFrom, _delegate.validTo),"Invalid period");
@@ -65,8 +68,10 @@ contract ClaimsVerifier is AbstractClaimsVerifier, DelegateTypes, AccessControlE
         function verifyDalegate(VerifiableDelegate memory verified) public view returns (bool){
             Delegate memory _delegate = verified.delegate;
             bytes32 _delegateHash = domainHash(_delegate);
-            return _isActiveCredential(_delegateHash) && delegates[_delegate.subject]==_delegateHash;
-
+            return (_isActiveCredential(_delegateHash) && 
+                delegates[_delegate.subject]==_delegateHash) && 
+                issuers[registry.getIssuer(_delegateHash)].allwedTypeHash==verified.delegate.allwedTypeHash &&
+                ecrecover(_delegateHash, verified.v, verified.r, verified.s)==_delegate.issuer;
         }
         function verifyDalegate(address _delegate) public view returns (bool){
             bytes32 _delegateHash = delegates[_delegate];

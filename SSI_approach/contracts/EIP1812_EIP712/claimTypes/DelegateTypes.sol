@@ -7,6 +7,8 @@ contract DelegateTypes {
   struct Delegate {
     address issuer;
     address subject;
+    bytes32 allwedTypeHash;
+    uint version;
     uint256 validFrom;
     uint256 validTo;
   }
@@ -29,7 +31,7 @@ contract DelegateTypes {
     
 
   bytes32 constant DELEGATE_TYPEHASH = keccak256(
-    "Delegate(address issuer, address subject, uint256 validFrom, uint256 validTo)"
+    "Delegate(address issuer, address subject, bytes32 allwedTypeHash, uint version, uint256 validFrom, uint256 validTo)"
   );
 
   bytes32 constant VERIFIABLE_DELEGATE_TYPEHASH = keccak256(
@@ -46,6 +48,8 @@ contract DelegateTypes {
         DELEGATE_TYPEHASH,
         delegate.issuer,
         delegate.subject,
+        delegate.allwedTypeHash,
+        delegate.version,
         delegate.validFrom,
         delegate.validTo
       )

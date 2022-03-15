@@ -3,7 +3,7 @@
   "title": "DCC Verifiable Delegation",
   "description": "Schema of a DCC Verifiable Delegation",
   "type": "object",
-  "required": ["id","domain"],
+  "required": ["id"],
   "properties": {
     "id": {
       "description": "Defines the DID of the subject that is described by the Verifiable Attestation",

@@ -4,7 +4,7 @@ pragma solidity 0.8.0;
 
 interface ICredentialRegistry {
 
-    struct CredentialMetadata {
+    struct credentialMetadata {
         address issuer;
         address signer;
         address subject;
@@ -12,6 +12,12 @@ interface ICredentialRegistry {
         uint256 validTo;
         bool status;
         bytes32 ipfsHash;
+    }
+
+    struct credentialSubjectMetadata {
+        bytes32 domainIpfsHash;
+        address domainContract;
+        uint version;
     }
 
     function registerCredential(address _issuer,address _signer, address _subject, bytes32 _credentialHash, uint256 _from, uint256 _exp, bytes32 _ipfsHash) external returns (bool);

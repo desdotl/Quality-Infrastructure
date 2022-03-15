@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "LegalEntityVerifiableID",
-  "description": "Schema of an EBSI Verifiable ID for a legal entity",
+  "description": "Schema of a Verifiable ID for a legal entity",
   "type": "object",
   "required": ["id", "legalName"],
   "properties": {
@@ -47,6 +47,10 @@
     "SIC": {
       "description": "Standard Industrial Classification (SIC) of Credential Subject (Article 3(1) of Directive 2009/101/EC of the European Parliament and of the Council.)",
       "type": "string"
+    },
+    "loa":{
+      "description":" eIDAS Regulation (EU) 910/2014",
+      "enum": ["LOW","SUBSTANTIAL","HIGH"]
     },
     "domainName": {
       "description": "Domain name  of Credential Subject",

@@ -2,13 +2,17 @@
 
 pragma solidity 0.8.0;
 
-import "../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
+import "../../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 import "./ICredentialRegistry.sol";
 
 contract CredentialRegistry is ICredentialRegistry, AccessControl {
     bytes32 public constant ISSUER_ROLE = keccak256("ISSUER_ROLE");
     
-    mapping(bytes32 => CredentialMetadata) public credentials; //map credential hash to issuer to signer to Credential Metadata
+    mapping(bytes32 => credentialMetadata) public credentials; //map credential hash to issuer to signer to Credential Metadata
+    
+    mapping (bytes32 => credentialSubjectMetadata[]) credentialSubjects; // mapping domain to address
+
+    bytes32[] credentialSubjectIDs; 
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -16,7 +20,7 @@ contract CredentialRegistry is ICredentialRegistry, AccessControl {
    
     function registerCredential(address _issuer,address _signer, address _subject, bytes32 _credentialHash, uint256 _from, uint256 _exp,bytes32 _ipfsHash) external override onlyIssuer returns (bool) {
         
-        CredentialMetadata storage credential = credentials[_credentialHash];
+        credentialMetadata storage credential = credentials[_credentialHash];
        
         require(credential.subject == address(0)&& credential.issuer == address(0)&& credential.signer == address(0), "Credential already exists");
         credential.issuer = _issuer;
@@ -63,7 +67,7 @@ contract CredentialRegistry is ICredentialRegistry, AccessControl {
         return credentials[_digest].issuer;
     }
     function getCredential(bytes32 _credentialHash) external view returns (address ,address , address  , uint256 , uint256 ,bytes32 ) {
-        CredentialMetadata memory  credential =  credentials[_credentialHash];
+        credentialMetadata memory  credential =  credentials[_credentialHash];
         return  (credential.issuer,credential.signer,credential.subject,credential.validFrom,credential.validTo,credential.ipfsHash);
     }
 
@@ -71,5 +75,17 @@ contract CredentialRegistry is ICredentialRegistry, AccessControl {
         require(hasRole(ISSUER_ROLE, msg.sender), "Caller is not a issuer 2");
         _;
     }
+
+    function registerCredentialSubject(bytes32 credentialSubjectHash, address domainContract,bytes32 domainIpfsHash ) external {
+        hasRole(DEFAULT_ADMIN_ROLE,msg.sender);
+        if( credentialSubjects[credentialSubjectHash].length==0){
+            credentialSubjectIDs.push(credentialSubjectHash);
+        }
+        credentialSubjects[credentialSubjectHash].push( credentialSubjectMetadata(domainIpfsHash,domainContract,credentialSubjects[credentialSubjectHash].length+1));
+    }
+    function verifyCredentialSubject(bytes32 credentialSubjectHash, address domainContract , uint version) external view returns (bool){
+        return( credentialSubjects[credentialSubjectHash][version-1].domainContract==domainContract);
+    }
+
 
 }

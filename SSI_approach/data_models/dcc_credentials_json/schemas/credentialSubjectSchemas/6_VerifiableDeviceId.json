@@ -12,6 +12,10 @@
         "default": "did:dcc:0xe88357BF682d965a38CE41d00085C05412d25936",
         "pattern": "^(did:dcc:0x)([a-zA-Z0-9]{40})$"
       },
+      "manufatureDID": {
+        "description": "Defines the name of the Manufacturer of the credential subject",
+        "type": "string"
+      },
       "manufatureProducerName": {
         "description": "Defines the name of the Manufacturer of the credential subject",
         "type": "string"
