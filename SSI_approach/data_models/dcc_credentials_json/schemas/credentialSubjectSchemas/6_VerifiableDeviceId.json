@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "DCC device Verifiable ID",
-  "description": "Defines additional properties on credentialSubject to describe ID",
+  "title": "Device Verifiable ID",
+  "description": "Schema of a Verifiable ID for a device entity",
     "type": "object",
-    "required": ["id","manufatureProducerName","deviceModel","deviceVersion","serialNumber","lotNumber"],
+    "required": ["id","identityClaims"],
     "properties": {
       "id": {
         "description": "Defines a unique identifier of the credential subject",
@@ -12,38 +12,48 @@
         "default": "did:dcc:0xe88357BF682d965a38CE41d00085C05412d25936",
         "pattern": "^(did:dcc:0x)([a-zA-Z0-9]{40})$"
       },
-      "manufatureDID": {
-        "description": "Defines the name of the Manufacturer of the credential subject",
-        "type": "string"
-      },
-      "manufatureProducerName": {
-        "description": "Defines the name of the Manufacturer of the credential subject",
-        "type": "string"
-      },
-      "deviceModel": {
-        "description": "Defines the device model of the credential subject",
-        "type": "string"
-      },
-      "deviceVersion": {
-        "description": "Defines the device version of the credential subject",
-        "type": "string",
-        "format": "date"
-      },
-      "catalogNumber": {
-        "description": "Defines the catalog Number from the manufacturer ",
-        "type": "string"
-      },
-      "lotNumber": {
-        "description": "Defines the lot in wich the device has been produced",
-        "type": "string"
-      },
-      "serialNumber": {
-        "description": "Defines the device serial number",
-        "type": "string"
-      },
-      "refManual": {
-        "description": "Defines the link to the instrument",
-        "type": "string"
+      "identityClaims":{
+        "type":"object",
+        "required": ["EUUDI,manufatureID"],
+        "properties": {
+          "EUUDI": {
+            "description": "generalized Unique Device Identifier build upon GS1 standard in Europe)(proposal)",
+            "type": "string"
+          },
+          "manufatureID": {
+            "description": "Defines the id of the manufacturer verifiableID Credential",
+            "type": "string"
+          },
+          "manufatureProducerName": {
+            "description": "Defines the name of the Manufacturer of the credential subject",
+            "type": "string"
+          },
+          "deviceModel": {
+            "description": "Defines the device model of the credential subject",
+            "type": "string"
+          },
+          "deviceVersion": {
+            "description": "Defines the device version of the credential subject",
+            "type": "string",
+            "format": "date"
+          },
+          "catalogNumber": {
+            "description": "Defines the catalog Number from the manufacturer ",
+            "type": "string"
+          },
+          "lotNumber": {
+            "description": "Defines the lot in wich the device has been produced",
+            "type": "string"
+          },
+          "serialNumber": {
+            "description": "Defines the device serial number",
+            "type": "string"
+          },
+          "refManual": {
+            "description": "Defines the link to the instrument",
+            "type": "string"
+          }
+        }
       }
     }
   }

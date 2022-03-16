@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "DCC Verifiable Delegation",
-  "description": "Schema of a DCC Verifiable Delegation",
+  "title": "Verifiable Delegation",
+  "description": "Schema of a Verifiable Delegation",
   "type": "object",
-  "required": ["id"],
+  "required": ["id","delegationClaims"],
   "properties": {
     "id": {
       "description": "Defines the DID of the subject that is described by the Verifiable Attestation",
@@ -11,7 +11,68 @@
       "format": "uri",
       "default": "did:dcc:0xe88357BF682d965a38CE41d00085C05412d25936",
       "pattern": "^(did:dcc:0x)([a-zA-Z0-9]{40})$"
+    },
+    "delegationClaims":{
+      "type":"object",
+      "required": [
+        "id",
+        "familyName",
+        "firstName",
+        "dateOfBirth",
+        "personalIdentifier",
+        "role",
+        "credentialSchemaIds"
+      ],
+      "properties": {
+          "credentialSchemaIds": {
+            "description": "A list of Schemas, registered in  Schemas Registry, which the delegated entity is allowed to issue, as per their delegation.",
+            "type": "array",
+            "minItems":1,
+            "items": {
+              "type": "string",
+              "default":"registry=0xdfd7ed8e098d68d202b48c58f0132e3cc2fe4484;id=0xdfd7ed8e098d68d202b48c58f0132e3cc2fe4484dfd7ed8e098d68d202b48c58",
+              "pattern":"^(registry=)(0x)([a-zA-Z0-9]{40})(;id=)(0x)([a-zA-Z0-9]{64})$"
+          },
+          "familyName": {
+            "description": "Defines current family name(s) of the credential subject",
+            "type": "string"
+          },
+          "firstName": {
+            "description": "Defines current first name(s) of the credential subject",
+            "type": "string"
+          },
+          "dateOfBirth": {
+            "description": "Defines date of birth of the credential subject",
+            "type": "string",
+            "format": "date"
+          },
+          "personalIdentifier": {
+            "description": "Defines the unique national identifier of the credential subject (constructed by the sending Member State in accordance with the technical specifications for the purposes of cross-border identification and which is as persistent as possible in time)",
+            "type": "string"
+          },
+          "role":{
+            "description": "Defines the role of the credential subject aginst the Issuer Legal Entities ",
+            "type": "string"
+          },
+          "nameAndFamilyNameAtBirth": {
+            "description": "Defines the first and the family name(s) of the credential subject at the time of their birth",
+            "type": "string"
+          },
+          "placeOfBirth": {
+            "description": "Defines the place where the credential subjectis born",
+            "type": "string"
+          },
+          "currentAddress": {
+            "description": "Defines the current address of the credential subject",
+            "type": "string"
+          },
+          "gender": {
+            "description": "Defines the gender of the credential subject",
+            "type": "string"
+          }
+        }
+      }
     }
-  }
+  }  
 }
  

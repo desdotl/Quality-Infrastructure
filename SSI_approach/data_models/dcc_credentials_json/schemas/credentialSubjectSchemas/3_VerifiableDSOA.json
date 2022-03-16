@@ -1,19 +1,32 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "title": "DSOA Certification Verifiable Accreditation records",
-  "description": "DSOA Certification Verifiable Accreditation schema for calbration contexts",
+  "title": "DSOA Certification Verifiable Credential records",
+  "description": "DSOA Certification Verifiable Credential schema for calbration contexts",
   "type": "object", 
-  "required": ["id", "authorizationClaims"],
+  "required": ["id","accreditationClaims"],
   "properties": {
     "id": {
       "description": "Refer to the subject DID",
-      "type": "string"
+      "type": "string",
+      "format": "uri",
+      "default": "did:dcc:0xe88357BF682d965a38CE41d00085C05412d25936",
+      "pattern": "^(did:dcc:0x)([a-zA-Z0-9]{40})$"
     },
-    "authorizationClaims": {
+    "accreditationClaims": {
       "description": "Defines a list of claims that define/determine the authorization of an Issuer to issue certain types of VCs. Mandatory",
       "type": "object",
-      "required": ["accreditationScope", "limitJurisdiction"],
+      "required": ["accreditationScope", "limitJurisdiction","credentialSchemaIds"],
       "properties": {
+        "credentialSchemaIds": {
+          "description": "A list of Schemas, registered in  Schemas Registry, which the accredited organisation is allowed to issue, as per their accreditation.",
+          "type": "array",
+          "minItems":1,
+          "items": {
+            "type": "string",
+            "default":"registry=0xdfd7ed8e098d68d202b48c58f0132e3cc2fe4484;id=0xdfd7ed8e098d68d202b48c58f0132e3cc2fe4484dfd7ed8e098d68d202b48c58",
+            "pattern":"^(registry=)(0x)([a-zA-Z0-9]{40})(;id=)(0x)([a-zA-Z0-9]{64})$"
+          }
+        },
         "accreditationScope": {
           "description": " Defines the specific accreditation scope that was accredited ",
           "type": "array",

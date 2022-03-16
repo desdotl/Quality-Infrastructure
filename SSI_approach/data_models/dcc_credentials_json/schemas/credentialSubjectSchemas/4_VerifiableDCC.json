@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "title": "DCC Verifiable Credential",
-  "description": "DCC  Verifiable Credential schema",
+  "title": "DCC Certification Verifiable Credential records",
+  "description": "DCC Certification Verifiable Credential schema for calbration contexts",
   "type": "object",
-  "required": [ "id", "certificationClaims","limitJurisdiction"],
+  "required": [ "id","certificationClaims"],
   "properties": {
     "id": {
       "description": "Refer to the subject DID",
@@ -15,100 +15,92 @@
     "certificationClaims": {
       "description": "Defines a list of claims that define/determine the DCC VCs. Mandatory",
       "type": "object",
-      "required": [ "refDCC","equipments","outputUncertainties"],
+      "required": ["certificationScope","limitJurisdiction"],
       "properties": {
-        "refDCC": {
-          "description": "Includes the external reference to the DCC",
-            "type": "string",
-            "format": "uri" 
-        },      
-        "standard":{
-          "description": "Defines the reference standards used for the issuance of the DCC",
-          "type": "array",
-          "items":{
-            "description":"link to the reference standard",
-            "type":"string",
-            "format": "uri"
-          }
-        },
-        "equipments": {
-          "description": "Defines the list of equipment used",
-          "type": "array",
-          "minItems":1,
-          "items": {
-            "description":"Define the id of the equipment instrument and the reference to its DCC in the off-chain storage",
+         "certificationScope":{
             "type":"object",
-            "required":["id","refDCC"],
-            "properties":{
-              "id":{
-                "description":"the DID of the equipment",
-                "type":"string",
-                "format":"uri"
+            "required": [ "equipments","outputUncertainties"],
+            "properties": {      
+              "standard":{
+                "description": "Defines the reference standards used for the issuance of the DCC",
+                "type": "array",
+                "items":{
+                  "description":"link to the reference standard",
+                  "type":"string",
+                  "format": "uri"
+                }
               },
-              "refDCC":{
-                "description":"the external reference of the DCC",
-                "type":"string",
-                "format":"uri"
-              }
-            }
-          }
-          
-        },
-        "outputUncertainties": {
-          "description": "Define the uncetainity outputs",
-          "type": "array",
-          "minItems":1,
-          "items": {
-            "description":"Define the uncetainity output record",
-            "type":"object",
-            "required":["instrmentOrProperty","si-unit","interval","uncertainity"],
-            "properties":{
-              "instrmentOrProperty": {
-                "description": "Defines the type of calibration",
-                "type": "string"
-              
-              },
-              "si-unit":{
-                "description":"Quantity unit in SI-Format",
-                "type":"string"
-              },
-              "interval":{
-                  "description":"Define the interval where CMC applies",
+              "equipments": {
+                "description": "Defines the list of equipment used",
+                "type": "array",
+                "minItems":1,
+                "items": {
+                  "description":"Define the id of the equipment instrument and the reference to its DCC in the off-chain storage",
                   "type":"object",
+                  "required":["id","refDCC"],
                   "properties":{
-                    "min":{
-                      "description":"The interval lower bound",
-                      "type":"string"
+                    "id":{
+                      "description":"the DID of the equipment",
+                      "type":"string",
+                      "format":"uri"
                     },
-                    "max":{
-                      "description":"The interval upper bound",
-                      "type":"string"
+                    "refDCC":{
+                      "description":"the external reference of the DCC",
+                      "type":"string",
+                      "format":"uri"
                     }
                   }
+                }
+                
               },
-              "uncertainity":{"$ref": "../lib/dcc.json#/definitions/formulaType"}
-            }
-          }
-        }
-      }    
-    },
-    "limitJurisdiction": {
-              "description": "Defines the jurisdiction for which the certification is valid",
-              "type": "array",
-              "minItems":1,
-              "items": {
-                "type": "string",
-                "format": "uri"
+              "outputUncertainties": {
+                "description": "Define the uncetainity outputs",
+                "type": "array",
+                "minItems":1,
+                "items": {
+                  "description":"Define the uncetainity output record",
+                  "type":"object",
+                  "required":["instrmentOrProperty","si-unit","interval","uncertainity"],
+                  "properties":{
+                    "instrmentOrProperty": {
+                      "description": "Defines the type of calibration",
+                      "type": "string"
+                    
+                    },
+                    "si-unit":{
+                      "description":"Quantity unit in SI-Format",
+                      "type":"string"
+                    },
+                    "interval":{
+                        "description":"Define the interval where CMC applies",
+                        "type":"object",
+                        "properties":{
+                          "min":{
+                            "description":"The interval lower bound",
+                            "type":"string"
+                          },
+                          "max":{
+                            "description":"The interval upper bound",
+                            "type":"string"
+                          }
+                        }
+                    },
+                    "uncertainity":{"$ref": "../lib/dcc.json#/definitions/formulaType"}
+                  }
+                }
               }
-        },
-    "domain":{
-      "description": "Defines the Domain of Delegation (compatible with EIP712-EIP1812)",
-      "type": "string",
-      "format": "uri"
-    },
-    "domainName":{
-      "description": "Defines the Domain of Delegation Name (compatible with EIP712-EIP1812)",
-      "type": "string"
+            }
+         },
+        "limitJurisdiction": {
+          "description": "Defines the jurisdiction for which the certification is valid",
+          "type": "array",
+          "minItems":1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+}
+      }    
     }
   }
 }

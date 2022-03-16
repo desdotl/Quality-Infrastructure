@@ -103,7 +103,7 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="issued" type="xs:dateTime">
+            <xs:element maxOccurs="1" name="issued" type="xs:dateTime">
                 <xs:annotation>
                     <xs:documentation>The issued date. A verifiable credential MUST have an
                         issuedDate property. The value represents the date and time the credential

@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.0;
 
-import "../../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
+import "../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 import "./ICredentialRegistry.sol";
 
 contract CredentialRegistry is ICredentialRegistry, AccessControl {
