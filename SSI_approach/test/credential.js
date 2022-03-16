@@ -16,9 +16,15 @@ const console = require('console');
 	const DELEGATE_TYPEHASH = web3Utils.soliditySha3("Delegate(address issuer, address subject, bytes32 allowed_type_hash, uint256 validFrom, uint256 validTo)");
 	const VERIFIABLE_DELEGATE_TYPEHASH = web3Utils.soliditySha3(web3Utils.encodePacked("VerifiableDelegate(Delegate delegate, uint8 v, bytes32 r, bytes32 s)", DELEGATE_TYPEHASH));
 	const VERIFIABLE_CREDENTIAL_TYPEHASH = web3Utils.soliditySha3( "VerifiableCredential(address issuer,address subject,bytes32 data,uint256 validFrom,uint256 validTo)" );
-	const DELEGATED_VERIFIABLE_CREDENTIAL_TYPEHASH = web3Utils.soliditySha3( web3Utils.encodePacked("VerifiableCredential(VerifiableDelegate issuer,address subject,bytes32 data,uint256 validFrom,uint256 validTo)",VERIFIABLE_DELEGATE_TYPEHASH))
+	const DELEGATED_VERIFIABLE_CREDENTIAL_TYPEHASH = web3Utils.soliditySha3( web3Utils.encodePacked("VerifiableCredential(VerifiableDelegate issuer,address subject,bytes32 data,uint256 validFrom,uint256 validTo)",VERIFIABLE_DELEGATE_TYPEHASH));
+	VERIFIABLE_CREDENTIAL_TYPEHASH = web3Utils.soliditySha3(web3Utils.encodePacked("VerifiableCredential(address issuer,address subject,bytes32 allwedTypeHash,uint256 version,uint256 validFrom,uint256 validTo,bytes32 data)"));
 	const EIP712DOMAIN_TYPEHASH = web3Utils.soliditySha3( "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)" );
-
+	const ID_TYPEHASH=web3Utils.soliditySha3(1);
+    const DSOA_TYPEHASH=web3Utils.soliditySha3(2);
+    const DEVID_TYPEHASH=web3Utils.soliditySha3(3);
+    const DCC_TYPEHASH=web3Utils.soliditySha3(4);
+    const ACCREDITATION_TYPEHASH=web3Utils.soliditySha3(5);
+	const veriKey="0x766572694b657900000000000000000000000000000000000000000000000000";
 	const sleep = seconds => new Promise( resolve => setTimeout( resolve, seconds * 1e3 ) );
 
 // utility function
