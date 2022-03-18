@@ -18,9 +18,9 @@ interface ICredentialRegistry {
         uint64 version;
     }
 
-    function registerCredential( bytes32 _credentialHash, uint64 from, uint64 to, bytes32 _ipfsHash) external;
+    function registerCredential( bytes32 _credentialHash, uint64 from, uint64 to, bytes32 _ipfsHash,address _issuer) external;
 
-    function revokeCredential(bytes32 _credentialHash) external;
+    function revokeCredential(bytes32 _credentialHash,address _issuer) external;
 
 
     event CredentialRegistered(bytes32 indexed credentialHash, uint64 iat);

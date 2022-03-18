@@ -86,7 +86,7 @@ contract AbstractClaimsVerifier  is ClaimTypes, AccessControl {
             //  Registration
                 bytes32 _delegateHash = domainHash(_delegate);
                 require(msg.sender== _delegateHash.recover(_signature),"Wrong Signer");
-                registry.registerCredential(_delegateHash,uint64( _delegate.validFrom),uint64(_delegate.validTo),_ipfsHash);
+                registry.registerCredential(_delegateHash,uint64( _delegate.validFrom),uint64(_delegate.validTo),_ipfsHash,msg.sender);
                 delegates[_delegate.subject]= DelegateMeta(_delegateHash,_delegate.allwedTypeHash);
 
             //  Registration event
@@ -95,53 +95,38 @@ contract AbstractClaimsVerifier  is ClaimTypes, AccessControl {
 
         function revokeDelegate(address _delegate) external onlyIssuer {
 
-            registry.isActiveCredential(delegates[_delegate].referenceCredential,msg.sender);
-            registry.revokeCredential(delegates[_delegate].referenceCredential);
+            require(registry.isActiveCredential(delegates[_delegate].referenceCredential,msg.sender));
+            registry.revokeCredential(delegates[_delegate].referenceCredential,msg.sender);
             DelegateRevoked( _delegate,msg.sender, block.timestamp);
         }
 
     // Basic credential
 
-        function registerCredential(VerifiableCredential memory vc, bytes32 _ipfsHash,bytes memory _signature) internal  returns (bytes32)  {
+        function registerCredential(VerifiableCredential memory vc, bytes32 _ipfsHash,bytes memory _signature) public  returns (bytes32)  {
             
             // Preliminary check 
-                require(msg.sender==vc.issuer,"Wrong Sender");    
+                
+                bytes32  digest = domainHash(vc);
+                address  signer =  digest.recover(_signature);
+                require(msg.sender == signer,"Wrong Signer");
+                require(_validPeriod(vc.validFrom, vc.validTo),"Invalid period");
                 require(registry.verifyCredentialSubject(vc.typeHash, address(this), vc.version),"CredentialSubject does not exist");
-                require(
-                    (hasRole(ISSUER_ROLE, msg.sender) && issuers[msg.sender].allwedTypeHash==vc.typeHash) || 
-                    (registry.isActiveCredential(delegates[msg.sender].referenceCredential,msg.sender) && delegates[msg.sender].allwedTypeHash==vc.typeHash),
-                    "Wrong issuer"
-                );
-            
-            //  Registration
-                bytes32 digest = domainHash(vc);
-                require (msg.sender == digest.recover(_signature),"Wrong Signer");
-                registry.registerCredential(digest, uint64(vc.validFrom),uint64(vc.validTo), _ipfsHash);
-            return digest;      
+                if (vc.issuer != signer)
+                    require (registry.isActiveCredential(delegates[msg.sender].referenceCredential,vc.issuer) && 
+                            delegates[msg.sender].allwedTypeHash==vc.typeHash,"Wrong Delegate" );
+                else 
+                    require( (hasRole(ISSUER_ROLE, msg.sender) && issuers[msg.sender].allwedTypeHash==vc.typeHash),"Wrong issuer");
+                registry.registerCredential(digest, uint64(vc.validFrom),uint64(vc.validTo), _ipfsHash,vc.issuer);
+                return digest;      
         }
 
-        function registerCredential(VerifiableCredential memory vc, bytes32 _ipfsHash,bytes32 r,bytes32 s,uint8 v) internal  returns (bytes32)  {
-            
-            // Preliminary check 
-                require(msg.sender==vc.issuer,"Wrong Sender");    
-                require(registry.verifyCredentialSubject(vc.typeHash, address(this), vc.version),"CredentialSubject does not exist");
-                require(
-                    (hasRole(ISSUER_ROLE, msg.sender) && issuers[msg.sender].allwedTypeHash==vc.typeHash) || 
-                    (registry.isActiveCredential(delegates[msg.sender].referenceCredential,msg.sender) && delegates[msg.sender].allwedTypeHash==vc.typeHash),
-                    "Wrong issuer"
-                );
-            
-            //  Registration
-                bytes32 digest = domainHash(vc);
-                require (msg.sender == ecrecover(digest, v, r, s),"Wrong Signer");
-                registry.registerCredential(digest, uint64(vc.validFrom),uint64(vc.validTo), _ipfsHash);
-            return digest;      
-        }
         
-        function revokeCredential(bytes32 _credentialHash) external {
+        function revokeCredential(bytes32 _credentialHash,address issuer) external {
 
-            registry.isActiveCredential(_credentialHash,msg.sender);
-            registry.revokeCredential(_credentialHash);
+                    require (registry.isActiveCredential(_credentialHash,issuer) && 
+                    (msg.sender == issuer || registry.isActiveCredential(delegates[msg.sender].referenceCredential,issuer)),
+                    "Not Authorized");
+            registry.revokeCredential(_credentialHash,issuer);
         }
 
     //  Verify Credential
@@ -169,6 +154,26 @@ contract AbstractClaimsVerifier  is ClaimTypes, AccessControl {
             require( registry.isActiveCredential( digest,_signer),"The credential is inactive (revoked or expired) ");
             return true;
         }
+
+    // Getter 
+        function getIssuerType(address _issuer) external view returns(bytes32){
+            return issuers[_issuer].allwedTypeHash;
+        }
+        
+
+        function getDelegateType(address _delegate) external view returns(bytes32){
+            return delegates[_delegate].allwedTypeHash;
+        }
+
+        function isActiveDelegate(address issuer) external view  returns (bool) {
+            return registry.isActiveCredential(delegates[msg.sender].referenceCredential,issuer);
+        }
+
+        function getDelegate(address _delegate) external view returns(DelegateMeta memory){
+            return delegates[_delegate];
+        }
+
+
 
     // Utility
 
@@ -224,5 +229,8 @@ contract AbstractClaimsVerifier  is ClaimTypes, AccessControl {
         function domainHash4(VerifiableCredential memory vd) public view returns (bytes32){
             return _domainHash(hash(vd));
         }
+
+       
+
 
 }

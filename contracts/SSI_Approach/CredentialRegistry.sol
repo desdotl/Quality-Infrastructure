@@ -19,22 +19,23 @@ contract CredentialRegistry is ICredentialRegistry, AccessControl {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
    
-    function registerCredential(bytes32 _credentialHash, uint64 from, uint64 to, bytes32 _ipfsHash) external override onlyIssuer {
+    
+    function registerCredential(bytes32 _credentialHash, uint64 from, uint64 to, bytes32 _ipfsHash,address issuer) external override onlyIssuer {
        
-        require(credentials[_credentialHash][tx.origin].from == 0 , "Credential already exists");
-        credentials[_credentialHash][tx.origin].status=true;
-        credentials[_credentialHash][tx.origin].from=from;
-        credentials[_credentialHash][tx.origin].to=to;
-        credentials[_credentialHash][tx.origin].ipfsHash=_ipfsHash;
+        require(credentials[_credentialHash][issuer].from == 0 , "Credential already exists");
+        credentials[_credentialHash][issuer].status=true;
+        credentials[_credentialHash][issuer].from=from;
+        credentials[_credentialHash][issuer].to=to;
+        credentials[_credentialHash][issuer].ipfsHash=_ipfsHash;
         emit CredentialRegistered(_credentialHash,uint64(block.timestamp));
         
     }
 
-    function revokeCredential(bytes32 _credentialHash) external override onlyIssuer {
+    function revokeCredential(bytes32 _credentialHash,address _issuer) external override onlyIssuer {
 
-        require(credentials[_credentialHash][tx.origin].from != 0, "Credential doesn't exist");
-        require(credentials[_credentialHash][tx.origin].status, "Credential already revoked");
-        credentials[_credentialHash][tx.origin].status = false;
+        require(credentials[_credentialHash][_issuer].from != 0, "Credential doesn't exist");
+        require(credentials[_credentialHash][_issuer].status, "Credential already revoked");
+        credentials[_credentialHash][_issuer].status = false;
         emit CredentialRevoked(_credentialHash, uint64(block.timestamp));
     }
 
@@ -42,12 +43,13 @@ contract CredentialRegistry is ICredentialRegistry, AccessControl {
         return credentials[_credentialHash][_issuer].ipfsHash;
     }
 
-    function isActiveCredential(bytes32 _credentialHash,address issuer) external view returns (bool) { 
+    function isActiveCredential(bytes32 _credentialHash,address _issuer) external view returns (bool) { 
 
-            return (            credentials[_credentialHash][issuer].from != 0 &&
-                                credentials[_credentialHash][issuer].from<uint64(block.timestamp) &&
-                                credentials[_credentialHash][issuer].to>uint64(block.timestamp) &&
-                                credentials[_credentialHash][issuer].status);
+            return (            
+                credentials[_credentialHash][_issuer].from != 0 &&
+                credentials[_credentialHash][_issuer].from<=uint64(block.timestamp) &&
+                credentials[_credentialHash][_issuer].to>uint64(block.timestamp) &&
+                credentials[_credentialHash][_issuer].status);
     }
 
     modifier onlyIssuer() {

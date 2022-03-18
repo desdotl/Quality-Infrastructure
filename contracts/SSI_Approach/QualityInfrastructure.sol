@@ -17,7 +17,8 @@ contract QualitiyInfrastructure is AbstractClaimsVerifier {
 
     // Events 
 
-        event IssuerRegistered(address indexed issuer ,bytes32 indexed typeID, address by , uint256 at);
+        
+        event IssuerRegistered(address indexed issuer, address by);
 
     // Constructor
 
@@ -40,7 +41,6 @@ contract QualitiyInfrastructure is AbstractClaimsVerifier {
                 registry.registerCredentialSubject(DEVID_TYPEHASH, address(this),ID_TYPEHASH);
                 registry.registerCredentialSubject(DCC_TYPEHASH, address(this),ID_TYPEHASH);
                 registry.registerCredentialSubject(ACCREDITATION_TYPEHASH, address(this),ID_TYPEHASH);
-            
         }
 
     // Function
@@ -49,56 +49,68 @@ contract QualitiyInfrastructure is AbstractClaimsVerifier {
                 require(!initialzed,"The contract is already initialized");
                 // Register first credential for admin (as an accreditor)
                 initialzed=true;
-                registry.registerCredential( _credentialHash,uint64(_from), uint64(_exp),_ipfsHash);
-                issuers[msg.sender]=IssuerMeta( _credentialHash,ACCREDITATION_TYPEHASH);
+                registry.registerCredential( _credentialHash,uint64(_from), uint64(_exp),_ipfsHash,msg.sender);
+                issuers[msg.sender].referenceCredential=_credentialHash;
+                issuers[msg.sender].allwedTypeHash=ACCREDITATION_TYPEHASH;
                 grantRole(ISSUER_ROLE,msg.sender);
                 grantRole(ISSUER_ISSUER_ROLE, msg.sender);
                 _setRoleAdmin(ISSUER_ROLE, ISSUER_ISSUER_ROLE);
-                IssuerRegistered(msg.sender ,ACCREDITATION_TYPEHASH, msg.sender , block.timestamp);
+                IssuerRegistered(msg.sender , msg.sender);
 
         }
 
         function registerAccreditorIssuer(VerifiableCredential memory vc, bytes32 _ipfsHash,bytes memory _signature) external onlyAdmin {      
             require(vc.typeHash==ACCREDITATION_TYPEHASH,"wrong typehash");
-            issuers[vc.subject]=IssuerMeta( registerCredential(vc, _ipfsHash, _signature),ACCREDITATION_TYPEHASH);
+            bytes32 digest=registerCredential(vc, _ipfsHash, _signature); 
+            issuers[vc.subject].referenceCredential=digest;
+            issuers[vc.subject].allwedTypeHash=ACCREDITATION_TYPEHASH;
             grantRole(ISSUER_ROLE, vc.subject);
             grantRole(ISSUER_ISSUER_ROLE, vc.subject);
-            IssuerRegistered(vc.subject ,ACCREDITATION_TYPEHASH, msg.sender , block.timestamp);
-        }
+            IssuerRegistered(vc.subject ,msg.sender);        }
 
         function registerIDIssuer(VerifiableCredential memory vc, bytes32 _ipfsHash,bytes memory _signature) external onlyIssuer {
 
             require( issuers[msg.sender].allwedTypeHash==ACCREDITATION_TYPEHASH, "Only Accreditor can accredit IDIssuer");
             require(vc.typeHash==ACCREDITATION_TYPEHASH);
-            issuers[vc.subject]=IssuerMeta( registerCredential(vc, _ipfsHash, _signature),ID_TYPEHASH);
+            bytes32 digest=registerCredential(vc, _ipfsHash, _signature); 
+            issuers[vc.subject].referenceCredential=digest;
+            issuers[vc.subject].allwedTypeHash=ID_TYPEHASH;
             grantRole(ISSUER_ROLE, vc.subject);
-            IssuerRegistered(vc.subject ,ID_TYPEHASH, msg.sender , block.timestamp);
+            IssuerRegistered(vc.subject ,msg.sender);
         }
 
         function registerDEVIDIssuer(VerifiableCredential memory vc, bytes32 _ipfsHash,bytes memory _signature)  external onlyIssuer {
             require( issuers[msg.sender].allwedTypeHash==ACCREDITATION_TYPEHASH, "Only Accreditor can accredit DEVIDIssuer");
             require(vc.typeHash==ACCREDITATION_TYPEHASH);
-            issuers[vc.subject]=IssuerMeta( registerCredential(vc, _ipfsHash, _signature),DEVID_TYPEHASH);
+            bytes32 digest=registerCredential(vc, _ipfsHash, _signature); 
+            issuers[vc.subject].referenceCredential=digest;
+            issuers[vc.subject].allwedTypeHash=DEVID_TYPEHASH;
             grantRole(ISSUER_ROLE, vc.subject);
-            IssuerRegistered(vc.subject ,DEVID_TYPEHASH, msg.sender , block.timestamp);
+            IssuerRegistered(vc.subject , msg.sender);
         }
 
         function registerDSOAIssuer(VerifiableCredential memory vc, bytes32 _ipfsHash,bytes memory _signature) external onlyIssuer {
             require( issuers[msg.sender].allwedTypeHash==ACCREDITATION_TYPEHASH, "Only Accreditor can accredit DSOAIssuer");
             require(vc.typeHash==ACCREDITATION_TYPEHASH);
-            issuers[vc.subject]=IssuerMeta( registerCredential(vc, _ipfsHash, _signature),DSOA_TYPEHASH);
+            bytes32 digest=registerCredential(vc, _ipfsHash, _signature); 
+            issuers[vc.subject].referenceCredential=digest;
+            issuers[vc.subject].allwedTypeHash=DSOA_TYPEHASH;
             grantRole(ISSUER_ROLE, vc.subject);
             grantRole(ISSUER_ISSUER_ROLE, vc.subject);
-            IssuerRegistered(vc.subject , DSOA_TYPEHASH, msg.sender , block.timestamp);
+            IssuerRegistered(vc.subject , msg.sender);
         }
 
         function registerDSOACredential(VerifiableCredential memory vc, bytes32 _ipfsHash,bytes memory _signature) external returns (bytes32){
             bytes32 digest= registerCredential(vc,_ipfsHash,_signature);
-            issuers[vc.subject]=IssuerMeta( digest,DCC_TYPEHASH); // Registration has been already done , we just grant role
+            issuers[vc.subject].referenceCredential=digest;
+            issuers[vc.subject].allwedTypeHash=DCC_TYPEHASH;
+             // Registration has been already done , we just grant role
             grantRole(ISSUER_ROLE, vc.subject);
-            IssuerRegistered(vc.subject ,DCC_TYPEHASH , msg.sender , block.timestamp);
+            IssuerRegistered(vc.subject , msg.sender);
             return digest;
         }
+
+        
 
 }
 
