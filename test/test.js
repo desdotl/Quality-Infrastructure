@@ -14,7 +14,7 @@ const LaboratoryContract = artifacts.require("LaboratoryContract");
 const ManufacturerContract = artifacts.require("ManufacturerContract");
 const AccreditorContract = artifacts.require("AccreditorContract");
 
-// utility function
+// utility
 
 const bytes32= "0x766572694b657900000000000000000000000000000000000000000000000000";
 
@@ -78,7 +78,7 @@ contract("Naive Quality Infrastructure", accounts => {
 		let gas=result.receipt["cumulativeGasUsed"];
 		console.log("\n\n\ CALIBRATION LABORATORY REGISTRATION \n The gas used is: "+ gas); 
 	});
-	//
+	
 	it("should register a Device", async () => {
 		const instance = await Authority.deployed();
 		let _address = await instance.getManufacturerContractbyEOAAddress(manufacturer.address);
@@ -90,9 +90,6 @@ contract("Naive Quality Infrastructure", accounts => {
 		let gas=result.receipt["cumulativeGasUsed"];
 		console.log("\n\n\ DEVICE REGISTRATION \n The gas used is: "+ gas); 
 	});
-
-	
-
 
 	it("should accredit a Laboratory", async () => {
 		const instance = await Authority.deployed();
@@ -115,8 +112,6 @@ contract("Naive Quality Infrastructure", accounts => {
 		console.log("\n\n\ CALIBRATION LABORATORY DELEGATE REGISTRATION \n The gas used is: "+ gas); 
 	});
 
-	
-
 	it("should certify a device", async () => {
 		const instance = await Authority.deployed();
 		let man_address = await instance.getManufacturerContractbyEOAAddress(manufacturer.address);
@@ -131,7 +126,6 @@ contract("Naive Quality Infrastructure", accounts => {
 		console.log("\n\n\ DCC ISSUANCE \n The gas used is: "+ gas); 
 	});
 
-
 	it("should certify a device  by delegate", async () => {
 		const instance = await Authority.deployed();
 		let man_address = await instance.getManufacturerContractbyEOAAddress(manufacturer.address);
@@ -145,7 +139,6 @@ contract("Naive Quality Infrastructure", accounts => {
 		let gas=result.receipt["cumulativeGasUsed"];
 		console.log("\n\n\ DCC DELEGATE ISSUANCE \n The gas used is: "+ gas); 
 	});
-
 
 });
 
@@ -653,6 +646,5 @@ contract("\n\n\n\n\nSSI Quality Infrastructure", accounts => {
 		
 		console.log("\n\n\ DCC CERTIFICATE REGISTRATION BY DELEGATE\n The gas used is: "+ gas); 
 	});
-
 	
 });
